@@ -1,7 +1,8 @@
 name: Terraform
 description: Runs Terraform in your pipeline.
 author: https://github.com/echoboomer
-requirements: ["docker"]
+requirements:
+  - docker
 configuration:
   properties:
     apply:
@@ -13,9 +14,8 @@ configuration:
     use_workspaces:
       type: boolean
     version:
-      type: integer
+      type: string
     workspace:
       type: string
   required:
     - init_config
-  additionalProperties: false

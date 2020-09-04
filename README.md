@@ -10,22 +10,24 @@ Add the following to your `pipeline.yml`:
 
 ```yml
 steps:
-  - plugins:
-      echoboomer/terraform#v0.1.0:
-        init_config: "-input=false -backend-config='bucket=my_gcp_bucket' -backend-config='prefix=my-prefix' -backend-config='credentials=sa.json'"
+  - label: "terraform"
+    plugins:
+      - echoboomer/terraform#v0.1.0:
+          init_config: "-input=false -backend-config='bucket=my_gcp_bucket' -backend-config='prefix=my-prefix' -backend-config='credentials=sa.json'"
 ```
 
 This is the only required parameter. You can pass in other options to adjust behavior:
 
 ```yml
 steps:
-  - plugins:
-      echoboomer/terraform#v0.1.0:
-        init_config: "-input=false -backend-config='bucket=my_gcp_bucket' -backend-config='prefix=my-prefix' -backend-config='credentials=sa.json'"
-        image: myrepo/mycustomtfimage
-        version: 0.12.21
-        use_workspaces: true
-        workspace: development
+  - label: "terraform"
+    plugins:
+      - echoboomer/terraform#v0.1.0:
+          init_config: "-input=false -backend-config='bucket=my_gcp_bucket' -backend-config='prefix=my-prefix' -backend-config='credentials=sa.json'"
+          image: myrepo/mycustomtfimage
+          version: 0.12.21
+          use_workspaces: true
+          workspace: development
 ```
 
 ## Configuration
