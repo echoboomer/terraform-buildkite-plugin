@@ -1,0 +1,83 @@
+#!/bin/bash
+
+set -euo pipefail
+
+# look for terraform directory
+# switch to it
+# allow setting terraform version
+# allow specifying the image that runs
+
+#########
+# SETUP #
+#########
+
+export APPLY=${APPLY:-false}
+export VERSION=${VERSION:-0.13.0}
+export IMAGE=${IMAGE:-"hashicorp/terraform:${VERSION}"}
+export INIT_CONFIG=${INIT_CONFIG}
+export USE_WORKSPACES=${USE_WORKSPACES:-false}
+export WORKSPACE=${WORKSPACE:-default}
+
+# Check for presence of required directories.
+required_folders=(
+  terraform
+)
+
+for dir in "${required_folders[@]}"; do
+  if [[ -d $dir ]]; then
+    echo "${dir} located."
+  else
+    echo "${dir} not found. Please make sure it is located in the project root."
+    exit 1
+  fi
+done
+
+# We do this to cover cases where modules are stored in GitHub.
+KNOWN_HOSTS_FILE=$(pwd)/known_hosts
+if [ ! -f "$KNOWN_HOSTS_FILE" ]; then
+    ssh-keyscan github.com >>$KNOWN_HOSTS_FILE
+fi
+
+function terraform-bin() {
+  docker run --rm -it \
+    -e SSH_AUTH_SOCK \
+    -v $SSH_AUTH_SOCK:$SSH_AUTH_SOCK \
+    --mount "type=bind,src=$PWD,dst=/svc" \
+    --mount "type=bind,src=$KNOWN_HOSTS_FILE,dst=/root/.ssh/known_hosts" \
+    -w /svc \
+    $IMAGE \
+    "${@}"
+}
+
+########
+# EXEC #
+########
+
+cd terraform
+
+echo "+++ :terraform: :hourglass: Setting up Terraform environment..."
+terraform-bin init ${INIT_CONFIG}
+if [[ "${USE_WORKSPACES}" == true ]]; then
+  terraform-bin workspace select ${WORKSPACE}
+fi
+terraform-bin validate
+
+echo "+++ :terraform: :hourglass: Running Terraform plan..."
+if [[ "${USE_WORKSPACES}" == true ]]; then
+  terraform-bin plan -input=false -out tfplan-${WORKSPACE} -var-file="${WORKSPACE}-terraform.tfvars"
+  terraform-bin show tfplan-${WORKSPACE} -no-color > tfplan.txt
+  terraform-bin show -json tfplan-${WORKSPACE} > tfplan.json
+else
+  terraform-bin plan -input=false -out tfplan
+  terraform-bin show tfplan -no-color > tfplan.txt
+  terraform-bin show -json tfplan > tfplan.json
+fi
+
+if [[ "${APPLY}" == true ]]; then
+  "+++ :terraform: :hourglass: Running Terraform apply based on calculated plan..."
+  if [[ "${USE_WORKSPACES}" == true ]]; then
+    terraform-bin apply -input=false tfplan-${WORKSPACE}
+  else
+    terraform-bin apply -input=false tfplan
+  fi
+fi
