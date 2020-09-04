@@ -1,8 +1,8 @@
 # Buildkite Terraform Plugin
 
-Allows running Terraform in a Buildkite pipeline.
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/echoboomer/terraform-buildkite-plugin) ![GitHub Release Date](https://img.shields.io/github/release-date/echoboomer/terraform-buildkite-plugin) ![GitHub contributors](https://img.shields.io/github/contributors/echoboomer/terraform-buildkite-plugin) ![GitHub issues](https://img.shields.io/github/issues/echoboomer/terraform-buildkite-plugin)
 
-**Note:** This is under development and should not be used in pipelines yet beyond testing.
+Allows running Terraform in a Buildkite pipeline.
 
 ## Prerequisites
 
