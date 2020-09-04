@@ -74,16 +74,16 @@ If setting `use_workspaces` to `true`, pass in the Terraform workspace name here
 
 ## Developing
 
-To run the tests:
+To run the linting tool:
 
 ```shell
-docker-compose run --rm tests
+docker-compose run --rm lint
 ```
 
 ## Contributing
 
-1. Fork the repo
-2. Make the changes
-3. Run the tests
-4. Commit and push your changes
-5. Send a pull request
+1. Fork the repo.
+2. Make your changes.
+3. Make sure linting passes.
+4. Commit and push your changes to your branch.
+5. Open a pull request.
