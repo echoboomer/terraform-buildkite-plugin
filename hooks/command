@@ -72,7 +72,6 @@ function terraform-run() {
       terraform-bin plan -input=false -out tfplan
       terraform-bin show -json tfplan > tfplan.json
     fi
-  else
   fi
 
   if [[ "${APPLY}" == true || "${APPLY_ONLY}" == true ]]; then

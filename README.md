@@ -14,6 +14,7 @@ The plugin assumes a few thing:
 - If using a Terraform workspace, the plugin will also look for a `.tfvars` file in the form `WORKSPACE_NAME-terraform.tfvars`.
 - If not using a Terraform workspace, the `default` workspace is used.
 - At the end of the Terraform plan, the plugin automatically generates `tfplan` as-is and `tfplan.json` for a JSON formatted version of the output. This is useful if you'd like to use a plugin like [artifacts](https://github.com/buildkite-plugins/artifacts-buildkite-plugin) to move your Terraform plan between steps, which is even more useful if you've opted to make two separate steps with a dedicated `apply` step with `plan` disabled. These files are both available in the `terraform/` directory in the agent for reference. You can also run the JSON output through something like OPA.
+- Your Buildkite agents will need Docker.
 
 ## Example
 
