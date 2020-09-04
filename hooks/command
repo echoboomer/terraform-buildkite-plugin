@@ -76,7 +76,7 @@ function terraform-run() {
     fi
   fi
 
-  if [[ "${APPLY}" == true || "${APPLY_ONLY}" == true ]] || [[ "$APPLY_MASTER" == true && BUILDKITE_BRANCH == "master" ]]; then
+  if [[ "${APPLY}" == true || "${APPLY_ONLY}" == true || ("$APPLY_MASTER" == true && BUILDKITE_BRANCH == "master") ]]; then
     "+++ :terraform: :hourglass: Running Terraform apply based on calculated plan..."
     if [[ "${USE_WORKSPACES}" == true ]]; then
       terraform-bin apply -input=false tfplan-${WORKSPACE}
