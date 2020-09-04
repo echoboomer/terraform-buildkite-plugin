@@ -6,13 +6,6 @@ set -euo pipefail
 # SETUP #
 #########
 
-export APPLY=${BUILDKITE_PLUGIN_TERRAFORM_APPLY:-false}
-export IMAGE_NAME=${BUILDKITE_PLUGIN_TERRAFORM_IMAGE:-"hashicorp/terraform"}
-export INIT_CONFIG=${BUILDKITE_PLUGIN_TERRAFORM_INIT_CONFIG}
-export USE_WORKSPACES=${BUILDKITE_PLUGIN_TERRAFORM_USE_WORKSPACES:-false}
-export VERSION=${BUILDKITE_PLUGIN_TERRAFORM_VERSION:-0.13.0}
-export WORKSPACE=${BUILDKITE_PLUGIN_TERRAFORM_WORKSPACE:-default}
-
 # Check for presence of required directories.
 required_folders=(
   terraform
@@ -20,9 +13,9 @@ required_folders=(
 
 for dir in "${required_folders[@]}"; do
   if [[ -d $dir ]]; then
-    echo "${dir} located."
+    echo "${dir} directory located."
   else
-    echo "${dir} not found. Please make sure it is located in the project root."
+    echo "${dir} directory not found. Please make sure it is located in the project root. We looked in $(pwd)."
     exit 1
   fi
 done
@@ -46,35 +39,50 @@ function terraform-bin() {
     "${@}"
 }
 
-########
-# EXEC #
-########
+function terraform-run() {
+  local APPLY=${BUILDKITE_PLUGIN_TERRAFORM_APPLY:-false}
+  local APPLY_ONLY=${BUILDKITE_PLUGIN_TERRAFORM_APPLY_ONLY:-false}
+  local IMAGE_NAME=${BUILDKITE_PLUGIN_TERRAFORM_IMAGE:-"hashicorp/terraform"}
+  local INIT_CONFIG=${BUILDKITE_PLUGIN_TERRAFORM_INIT_CONFIG}
+  local USE_WORKSPACES=${BUILDKITE_PLUGIN_TERRAFORM_USE_WORKSPACES:-false}
+  local VERSION=${BUILDKITE_PLUGIN_TERRAFORM_VERSION:-0.13.0}
+  local WORKSPACE=${BUILDKITE_PLUGIN_TERRAFORM_WORKSPACE:-default}
 
-cd terraform
+  cd terraform
 
-echo "+++ :terraform: :hourglass: Setting up Terraform environment..."
-terraform-bin init ${INIT_CONFIG}
-if [[ "${USE_WORKSPACES}" == true ]]; then
-  terraform-bin workspace select ${WORKSPACE}
-fi
-terraform-bin validate
-
-echo "+++ :terraform: :hourglass: Running Terraform plan..."
-if [[ "${USE_WORKSPACES}" == true ]]; then
-  terraform-bin plan -input=false -out tfplan-${WORKSPACE} -var-file="${WORKSPACE}-terraform.tfvars"
-  terraform-bin show tfplan-${WORKSPACE} -no-color > tfplan.txt
-  terraform-bin show -json tfplan-${WORKSPACE} > tfplan.json
-else
-  terraform-bin plan -input=false -out tfplan
-  terraform-bin show tfplan -no-color > tfplan.txt
-  terraform-bin show -json tfplan > tfplan.json
-fi
-
-if [[ "${APPLY}" == true ]]; then
-  "+++ :terraform: :hourglass: Running Terraform apply based on calculated plan..."
-  if [[ "${USE_WORKSPACES}" == true ]]; then
-    terraform-bin apply -input=false tfplan-${WORKSPACE}
-  else
-    terraform-bin apply -input=false tfplan
+  if [[ "${APPLY_ONLY}" == false ]]; then
+    echo "+++ :terraform: :hourglass: Setting up Terraform environment..."
+    terraform-bin init ${INIT_CONFIG}
+    echo ""
   fi
-fi
+
+  if [[ "${USE_WORKSPACES}" == true ]]; then
+    terraform-bin workspace select ${WORKSPACE}
+    echo ""
+  fi
+
+  terraform-bin validate
+
+  if [[ "${APPLY_ONLY}" == false ]]; then
+    echo "+++ :terraform: :hourglass: Running Terraform plan..."
+    if [[ "${USE_WORKSPACES}" == true ]]; then
+      terraform-bin plan -input=false -out tfplan-${WORKSPACE} -var-file="${WORKSPACE}-terraform.tfvars"
+      terraform-bin show -json tfplan-${WORKSPACE} > tfplan-${WORKSPACE}.json
+    else
+      terraform-bin plan -input=false -out tfplan
+      terraform-bin show -json tfplan > tfplan.json
+    fi
+  else
+  fi
+
+  if [[ "${APPLY}" == true || "${APPLY_ONLY}" == true ]]; then
+    "+++ :terraform: :hourglass: Running Terraform apply based on calculated plan..."
+    if [[ "${USE_WORKSPACES}" == true ]]; then
+      terraform-bin apply -input=false tfplan-${WORKSPACE}
+    else
+      terraform-bin apply -input=false tfplan
+    fi
+  fi
+}
+
+terraform-run()
