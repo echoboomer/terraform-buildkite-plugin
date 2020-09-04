@@ -12,7 +12,7 @@ Add the following to your `pipeline.yml`:
 steps:
   - label: "terraform"
     plugins:
-      - echoboomer/terraform#v0.1.1-alpha:
+      - echoboomer/terraform#v0.1.2-alpha:
           init_config: "-input=false -backend-config='bucket=my_gcp_bucket' -backend-config='prefix=my-prefix' -backend-config='credentials=sa.json'"
 ```
 
@@ -22,7 +22,7 @@ This is the only required parameter. You can pass in other options to adjust beh
 steps:
   - label: "terraform"
     plugins:
-      - echoboomer/terraform#v0.1.1-alpha:
+      - echoboomer/terraform#v0.1.2-alpha:
           init_config: "-input=false -backend-config='bucket=my_gcp_bucket' -backend-config='prefix=my-prefix' -backend-config='credentials=sa.json'"
           image: myrepo/mycustomtfimage
           version: 0.12.21

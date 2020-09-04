@@ -7,10 +7,10 @@ set -euo pipefail
 #########
 
 export APPLY=${BUILDKITE_PLUGIN_TERRAFORM_APPLY:-false}
-export VERSION=${BUILDKITE_PLUGIN_TERRAFORM_VERSION:-0.13.0}
-export IMAGE=${BUILDKITE_PLUGIN_TERRAFORM_IMAGE:-"hashicorp/terraform:${VERSION}"}
+export IMAGE_NAME=${BUILDKITE_PLUGIN_TERRAFORM_IMAGE:-"hashicorp/terraform"}
 export INIT_CONFIG=${BUILDKITE_PLUGIN_TERRAFORM_INIT_CONFIG}
 export USE_WORKSPACES=${BUILDKITE_PLUGIN_TERRAFORM_USE_WORKSPACES:-false}
+export VERSION=${BUILDKITE_PLUGIN_TERRAFORM_VERSION:-0.13.0}
 export WORKSPACE=${BUILDKITE_PLUGIN_TERRAFORM_WORKSPACE:-default}
 
 # Check for presence of required directories.
@@ -34,6 +34,8 @@ if [ ! -f "$KNOWN_HOSTS_FILE" ]; then
 fi
 
 function terraform-bin() {
+  local DOCKER_IMAGE="${IMAGE_NAME}:${VERSION}"
+
   docker run --rm -it \
     -e SSH_AUTH_SOCK \
     -v $SSH_AUTH_SOCK:$SSH_AUTH_SOCK \
