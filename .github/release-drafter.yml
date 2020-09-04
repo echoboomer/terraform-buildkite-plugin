@@ -35,7 +35,7 @@ template: |
   steps:
     - label: 'terraform'
       plugins:
-  -     echoboomer/terraform#$PREVIOUS_TAG:
-  +     echoboomer/terraform#v$NEXT_MINOR_VERSION:
-          image: myrepo/mycustomtfimage
+  -     - echoboomer/terraform#$PREVIOUS_TAG:
+  +       echoboomer/terraform#v$NEXT_MINOR_VERSION:
+            image: myrepo/mycustomtfimage
   ```
