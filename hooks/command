@@ -42,7 +42,7 @@ function terraform-bin() {
     --mount "type=bind,src=$PWD,dst=/svc" \
     --mount "type=bind,src=$KNOWN_HOSTS_FILE,dst=/root/.ssh/known_hosts" \
     -w /svc \
-    $IMAGE \
+    $DOCKER_IMAGE \
     "${@}"
 }
 
