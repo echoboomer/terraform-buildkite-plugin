@@ -6,15 +6,29 @@ Allows running Terraform in a Buildkite pipeline.
 
 ## Prerequisites
 
-The plugin assumes a few thing:
+#### Organization
 
-- Your Terraform code is in the root of your repository in the folder `terraform/`. At this time, another location is not supported.
-- It's up to you to define what flags are used for `terraform init` by taking advantage of `init_config`. This is going to vary depending on your provider(s) and/or backend(s).
-- If using a Terraform workspace, the workspace is selected before running `plan` and will also be used before running `apply`.
-- If using a Terraform workspace, the plugin will also look for a `.tfvars` file in the form `WORKSPACE_NAME-terraform.tfvars`.
-- If not using a Terraform workspace, the `default` workspace is used.
-- At the end of the Terraform plan, the plugin automatically generates `tfplan` as-is and `tfplan.json` for a JSON formatted version of the output. This is useful if you'd like to use a plugin like [artifacts](https://github.com/buildkite-plugins/artifacts-buildkite-plugin) to move your Terraform plan between steps, which is even more useful if you've opted to make two separate steps with a dedicated `apply` step with `plan` disabled. These files are both available in the `terraform/` directory in the agent for reference. You can also run the JSON output through something like OPA.
-- Your Buildkite agents will need Docker.
+Your Terraform code is in the root of your repository in the folder `terraform/`. At this time, another location is not supported.
+
+#### Initialization
+
+It's up to you to define what flags are used for `terraform init` by taking advantage of `init_config`. This is going to vary depending on your provider(s) and/or backend(s).
+
+#### Workspaces
+
+If using a Terraform workspace, the workspace is selected before running `plan` and will also be used before running `apply`.
+
+If using a Terraform workspace, the plugin will also look for a `.tfvars` file in the form `WORKSPACE_NAME-terraform.tfvars`.
+
+If not using a Terraform workspace, the `default` workspace is used.
+
+#### Artifacts
+
+At the end of the Terraform plan, the plugin automatically generates `tfplan` as-is and `tfplan.json` for a JSON formatted version of the output. This is useful if you'd like to use a plugin like [artifacts](https://github.com/buildkite-plugins/artifacts-buildkite-plugin) to move your Terraform plan between steps, which is even more useful if you've opted to make two separate steps with a dedicated `apply` step with `plan` disabled. These files are both available in the `terraform/` directory in the agent for reference. You can also run the JSON output through something like OPA.
+
+#### Agent Requirements
+
+Your Buildkite agents will need Docker.
 
 ## Example
 
@@ -24,7 +38,7 @@ Add the following to your `pipeline.yml`:
 steps:
   - label: "terraform"
     plugins:
-      - echoboomer/terraform#v0.1.4-alpha:
+      - echoboomer/terraform#v1.0.1:
           init_config: "-input=false -backend-config=bucket=my_gcp_bucket -backend-config=prefix=my-prefix -backend-config=credentials=sa.json"
 ```
 
@@ -34,12 +48,24 @@ This is the only required parameter. You can pass in other options to adjust beh
 steps:
   - label: "terraform"
     plugins:
-      - echoboomer/terraform#v0.1.4-alpha:
+      - echoboomer/terraform#v1.0.1:
           init_config: "-input=false -backend-config=bucket=my_gcp_bucket -backend-config=prefix=my-prefix -backend-config=credentials=sa.json"
           image: myrepo/mycustomtfimage
           version: 0.12.21
           use_workspaces: true
           workspace: development
+```
+
+If you want an out of the box solution that simply executes a `plan` on non-master branches and `apply` on merge to master, you can use this:
+
+```yml
+steps:
+  - label: "terraform"
+    plugins:
+      - echoboomer/terraform#v1.0.1:
+          apply_master: true
+          init_config: "-input=false -backend-config=bucket=my_gcp_bucket -backend-config=prefix=my-prefix -backend-config=credentials=sa.json"
+          version: 0.12.21
 ```
 
 ## Configuration
@@ -51,6 +77,10 @@ Whether or not to run `terraform apply` on this step. The plugin only assumes `t
 ### `apply_only` (Not Required, boolean)
 
 If this option is supplied, `plan` is skipped and `apply` is forced. This is useful if creating separate steps for `plan` and `apply`. You do not need to use both this and `apply`.
+
+### `apply_master` (Not Required, boolean)
+
+If this option is supplied, `apply` will automatically run if `BUILDKITE_BRANCH` is `master`. This allows you to define a single `pipeline.yml` step that will provide a `plan` on pull request and `apply` on master merge.
 
 ### `image` (Not Required, string)
 
