@@ -36,6 +36,6 @@ template: |
     - label: 'terraform'
       plugins:
   -     - echoboomer/terraform#$PREVIOUS_TAG:
-  +       echoboomer/terraform#v$NEXT_MINOR_VERSION:
+  +       echoboomer/terraform#v$NEXT_PATCH_VERSION:
             image: myrepo/mycustomtfimage
   ```
