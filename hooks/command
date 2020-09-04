@@ -42,6 +42,7 @@ function terraform-bin() {
 function terraform-run() {
   local APPLY=${BUILDKITE_PLUGIN_TERRAFORM_APPLY:-false}
   local APPLY_ONLY=${BUILDKITE_PLUGIN_TERRAFORM_APPLY_ONLY:-false}
+  local APPLY_MASTER=${BUILDKITE_PLUGIN_TERRAFORM_APPLY_MASTER:-false}
   local IMAGE_NAME=${BUILDKITE_PLUGIN_TERRAFORM_IMAGE:-"hashicorp/terraform"}
   local INIT_CONFIG=${BUILDKITE_PLUGIN_TERRAFORM_INIT_CONFIG}
   local USE_WORKSPACES=${BUILDKITE_PLUGIN_TERRAFORM_USE_WORKSPACES:-false}
@@ -74,7 +75,7 @@ function terraform-run() {
     fi
   fi
 
-  if [[ "${APPLY}" == true || "${APPLY_ONLY}" == true ]]; then
+  if [[ "${APPLY}" == true || "${APPLY_ONLY}" == true ]] || [[ "$APPLY_MASTER" == true && BUILDKITE_BRANCH == "master" ]]; then
     "+++ :terraform: :hourglass: Running Terraform apply based on calculated plan..."
     if [[ "${USE_WORKSPACES}" == true ]]; then
       terraform-bin apply -input=false tfplan-${WORKSPACE}

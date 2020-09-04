@@ -9,6 +9,8 @@ configuration:
       type: boolean
     apply_only:
       type: boolean
+    apply_master:
+      type: boolean
     image:
       type: string
     init_config:
