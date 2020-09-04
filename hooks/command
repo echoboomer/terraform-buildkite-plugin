@@ -84,4 +84,4 @@ function terraform-run() {
   fi
 }
 
-terraform-run()
+terraform-run
