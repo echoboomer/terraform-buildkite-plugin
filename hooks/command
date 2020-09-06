@@ -21,8 +21,10 @@ for dir in "${required_folders[@]}"; do
 done
 
 # We do this to cover cases where modules are stored in GitHub.
+# Without this, the container hangs forever waiting for confirmation.
 KNOWN_HOSTS_FILE=$(pwd)/known_hosts
-if [ ! -f "$KNOWN_HOSTS_FILE" ]; then
+
+if [[ ! -f "$KNOWN_HOSTS_FILE" ]]; then
     ssh-keyscan github.com >>$KNOWN_HOSTS_FILE
 fi
 
@@ -76,7 +78,7 @@ function terraform-run() {
     fi
   fi
 
-  if [[ "${APPLY}" == true || "${APPLY_ONLY}" == true || ("$APPLY_MASTER" == true && ${BUILDKITE_BRANCH} == "master") ]]; then
+  if [[ "${APPLY}" == true || "${APPLY_ONLY}" == true || ("${APPLY_MASTER}" == true && "${BUILDKITE_BRANCH}" == "master") ]]; then
     echo "+++ :terraform: :hourglass: Running Terraform apply based on calculated plan..."
     if [[ "${USE_WORKSPACES}" == true ]]; then
       terraform-bin apply -input=false tfplan-${WORKSPACE}
