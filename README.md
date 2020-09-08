@@ -124,7 +124,7 @@ If using a custom Docker image to run `terraform`, set it here. This should only
 
 ### `init_config` (Required, string)
 
-A string specifying flags to pass to `terraform init`. This is required.
+A string specifying flags to pass to `terraform init`. This is required. This is parsed as an array and then passed into the `init` command to properly pass spaces, quotes, etc.
 
 ### `no_validate` (Not Required, boolean)
 
