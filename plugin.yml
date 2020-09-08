@@ -25,5 +25,3 @@ configuration:
       type: string
     workspace:
       type: string
-  required:
-    - init_args
