@@ -100,10 +100,10 @@ function terraform-run() {
     ls -al .
   fi
 
-  if [[ "${TF_DIFF}" == false && "${SKIP_APPLY_NO_DIFF}" == true ]]; then
-    echo "--- :terraform: :buildkite: :zzz: Skipping apply step."
-  else
-    if [[ "${APPLY}" == true || "${APPLY_ONLY}" == true || ("${APPLY_MASTER}" == true && "${BUILDKITE_BRANCH}" == "master") ]]; then
+  if [[ "${APPLY}" == true || "${APPLY_ONLY}" == true || ("${APPLY_MASTER}" == true && "${BUILDKITE_BRANCH}" == "master") ]]; then
+    if [[ "${TF_DIFF}" == false && "${SKIP_APPLY_NO_DIFF}" == true ]]; then
+      echo "--- :terraform: :buildkite: :zzz: Skipping apply step."
+    else
       echo "+++ :terraform: :buildkite: :hourglass: Running Terraform apply based on calculated plan..."
       terraform-bin apply -input=false tfplan
     fi
