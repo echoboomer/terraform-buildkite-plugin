@@ -57,11 +57,7 @@ function terraform-run() {
   cd terraform
 
   echo "+++ :terraform: :buildkite: :hammer_and_wrench: Setting up Terraform environment..."
-
-  init_args=()
-  init_args+=("$INIT_ARGS")
-
-  terraform-bin init ${init_args[@]}
+  terraform-bin init ${INIT_ARGS[@]}
   echo ""
 
   if [[ "${USE_WORKSPACES}" == true ]]; then
