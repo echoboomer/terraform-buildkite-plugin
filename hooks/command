@@ -57,7 +57,7 @@ function terraform-run() {
   cd terraform
 
   if [[ "${APPLY_ONLY}" == false ]]; then
-    echo "+++ :terraform: :hourglass: Setting up Terraform environment..."
+    echo "+++ :terraform: :buildkite: :hammer_and_wrench: Setting up Terraform environment..."
     terraform-bin init ${INIT_CONFIG}
     echo ""
   fi
@@ -72,7 +72,7 @@ function terraform-run() {
   fi
 
   if [[ "${APPLY_ONLY}" == false ]]; then
-    echo "+++ :terraform: :hourglass: Running Terraform plan..."
+    echo "+++ :terraform: :buildkite: :hourglass: Running Terraform plan..."
 
     if [[ "${USE_WORKSPACES}" == true ]]; then
       terraform-bin plan -input=false -out tfplan -var-file="${WORKSPACE}-terraform.tfvars"
@@ -86,22 +86,25 @@ function terraform-run() {
 
     if grep -iFq "Plan: 0 to add, 0 to change, 0 to destroy." tfplan.txt; then
       echo ""
-      echo "--- :terraform: :white_check_mark: Exporting tf_diff=false to agent metadata."
+      echo "--- :terraform: :buildkite: :white_check_mark: Exporting tf_diff=false to agent metadata."
       buildkite-agent meta-data set "tf_diff" "false"
       export TF_DIFF=false
     else
       echo ""
-      echo "--- :terraform: :white_check_mark: Exporting tf_diff=true to agent metadata."
+      echo "--- :terraform: :buildkite: :white_check_mark: Exporting tf_diff=true to agent metadata."
       buildkite-agent meta-data set "tf_diff" "true"
       export TF_DIFF=true
     fi
+
+    echo "--- :terraform: :buildkite: :floppy_disk: Listing directory contents for record keeping."
+    ls -al .
   fi
 
   if [[ "${TF_DIFF}" == false && "${SKIP_APPLY_NO_DIFF}" == true ]]; then
-    echo "--- :terraform: :zzz: Skipping apply step."
+    echo "--- :terraform: :buildkite: :zzz: Skipping apply step."
   else
     if [[ "${APPLY}" == true || "${APPLY_ONLY}" == true || ("${APPLY_MASTER}" == true && "${BUILDKITE_BRANCH}" == "master") ]]; then
-      echo "+++ :terraform: :hourglass: Running Terraform apply based on calculated plan..."
+      echo "+++ :terraform: :buildkite: :hourglass: Running Terraform apply based on calculated plan..."
       terraform-bin apply -input=false tfplan
     fi
   fi
