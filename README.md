@@ -47,7 +47,7 @@ Add the following to your `pipeline.yml`:
 steps:
   - label: "terraform"
     plugins:
-      - echoboomer/terraform#v1.2.17:
+      - echoboomer/terraform#v1.2.18:
           init_args: ["-input=false", "-backend-config=bucket=my_gcp_bucket", "-backend-config=prefix=my-prefix", "-backend-config=credentials=sa.json"]
 ```
 
@@ -57,7 +57,7 @@ While no commands are required, out of the box behavior may be undesirable witho
 steps:
   - label: "terraform"
     plugins:
-      - echoboomer/terraform#v1.2.17:
+      - echoboomer/terraform#v1.2.18:
           init_args: ["-input=false", "-backend-config=bucket=my_gcp_bucket", "-backend-config=prefix=my-prefix", "-backend-config=credentials=sa.json"]
           image: myrepo/mycustomtfimage
           version: 0.12.21
@@ -71,7 +71,7 @@ If you want an out of the box solution that simply executes a `plan` on non-mast
 steps:
   - label: "terraform"
     plugins:
-      - echoboomer/terraform#v1.2.17:
+      - echoboomer/terraform#v1.2.18:
           apply_master: true
           init_args: ["-input=false", "-backend-config=bucket=my_gcp_bucket", "-backend-config=prefix=my-prefix", "-backend-config=credentials=sa.json"]
           version: 0.12.21
@@ -86,7 +86,7 @@ steps:
   - label: "terraform plan"
     branches: "!master"
     plugins:
-      - echoboomer/terraform#v1.2.17:
+      - echoboomer/terraform#v1.2.18:
           init_args: ["-input=false", "-backend-config=bucket=my_gcp_bucket", "-backend-config=prefix=my-prefix", "-backend-config=credentials=sa.json"]
           version: 0.12.21
       - artifacts#v1.2.0:
@@ -96,7 +96,7 @@ steps:
     plugins:
       - artifacts#v1.2.0:
           download: "tfplan"
-      - echoboomer/terraform#v1.2.17:
+      - echoboomer/terraform#v1.2.18:
           apply_only: true
           init_args: ["-input=false", "-backend-config=bucket=my_gcp_bucket", "-backend-config=prefix=my-prefix", "-backend-config=credentials=sa.json"]
           version: 0.12.21
@@ -126,9 +126,9 @@ If providing this option and setting it to `true`, additional output is provided
 
 If using a custom Docker image to run `terraform`, set it here. This should only be the `repo/image` string. Set the tag in `version`. Defaults to `hashicorp/terraform`.
 
-### `init_args` (Not Required, array)
+### `init_args` (Not Required, string, array)
 
-An array of separate strings specifying flags to pass to `terraform init`. Omitting it will result in no flags being passed to the `init` command.
+Arguments to pass to `terraform init`. Can be a `string` or `array` depending on needs. Is not required, but is likely critical for any Terraform commands to work.
 
 ### `no_validate` (Not Required, boolean)
 
