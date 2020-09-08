@@ -47,7 +47,7 @@ function terraform-run() {
   local APPLY_MASTER=${BUILDKITE_PLUGIN_TERRAFORM_APPLY_MASTER:-false}
   local BUILDKITE_BRANCH=${BUILDKITE_BRANCH:-}
   local IMAGE_NAME=${BUILDKITE_PLUGIN_TERRAFORM_IMAGE:-"hashicorp/terraform"}
-  local INIT_CONFIG="${BUILDKITE_PLUGIN_TERRAFORM_INIT_CONFIG}"
+  local INIT_ARGS="${BUILDKITE_PLUGIN_TERRAFORM_INIT_ARGS}"
   local NO_VALIDATE=${BUILDKITE_PLUGIN_TERRAFORM_NO_VALIDATE:-false}
   local USE_WORKSPACES=${BUILDKITE_PLUGIN_TERRAFORM_USE_WORKSPACES:-false}
   local SKIP_APPLY_NO_DIFF=${BUILDKITE_PLUGIN_TERRAFORM_SKIP_APPLY_NO_DIFF:-false}
@@ -57,7 +57,11 @@ function terraform-run() {
   cd terraform
 
   echo "+++ :terraform: :buildkite: :hammer_and_wrench: Setting up Terraform environment..."
-  terraform-bin init "${INIT_CONFIG[@]}"
+
+  init_args=()
+  init_args+=("$BUILDKITE_PLUGIN_TERRAFORM_INIT_CONFIG")
+
+  terraform-bin init ${init_args[@]}
   echo ""
 
   if [[ "${USE_WORKSPACES}" == true ]]; then
@@ -109,3 +113,11 @@ function terraform-run() {
 }
 
 terraform-run
+
+paths=("foo" "bar")
+
+if [[ -n "${BUILDKITE_PLUGIN_CACHE_PATHS:-}" ]]; then
+  paths+=("$BUILDKITE_PLUGIN_CACHE_PATHS")
+fi
+
+echo ${paths[@]}
