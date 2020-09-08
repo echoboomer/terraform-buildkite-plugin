@@ -18,7 +18,7 @@ Your Terraform code is in the root of your repository in the folder `terraform/`
 
 #### Initialization
 
-It's up to you to define what flags are used for `terraform init` by taking advantage of `init_config`. This is going to vary depending on your provider(s) and/or backend(s).
+It's up to you to define what flags are used for `terraform init` by taking advantage of `init_args`. This is going to vary depending on your provider(s) and/or backend(s).
 
 #### Workspaces
 
@@ -47,8 +47,8 @@ Add the following to your `pipeline.yml`:
 steps:
   - label: "terraform"
     plugins:
-      - echoboomer/terraform#v1.2.10:
-          init_config: ["-input=false", "-backend-config=bucket=my_gcp_bucket", "-backend-config=prefix=my-prefix", "-backend-config=credentials=sa.json"]
+      - echoboomer/terraform#v1.2.11:
+          init_args: ["-input=false", "-backend-config=bucket=my_gcp_bucket", "-backend-config=prefix=my-prefix", "-backend-config=credentials=sa.json"]
 ```
 
 This is the only required parameter. You can pass in other options to adjust behavior:
@@ -57,8 +57,8 @@ This is the only required parameter. You can pass in other options to adjust beh
 steps:
   - label: "terraform"
     plugins:
-      - echoboomer/terraform#v1.2.10:
-          init_config: ["-input=false", "-backend-config=bucket=my_gcp_bucket", "-backend-config=prefix=my-prefix", "-backend-config=credentials=sa.json"]
+      - echoboomer/terraform#v1.2.11:
+          init_args: ["-input=false", "-backend-config=bucket=my_gcp_bucket", "-backend-config=prefix=my-prefix", "-backend-config=credentials=sa.json"]
           image: myrepo/mycustomtfimage
           version: 0.12.21
           use_workspaces: true
@@ -71,9 +71,9 @@ If you want an out of the box solution that simply executes a `plan` on non-mast
 steps:
   - label: "terraform"
     plugins:
-      - echoboomer/terraform#v1.2.10:
+      - echoboomer/terraform#v1.2.11:
           apply_master: true
-          init_config: ["-input=false", "-backend-config=bucket=my_gcp_bucket", "-backend-config=prefix=my-prefix", "-backend-config=credentials=sa.json"]
+          init_args: ["-input=false", "-backend-config=bucket=my_gcp_bucket", "-backend-config=prefix=my-prefix", "-backend-config=credentials=sa.json"]
           version: 0.12.21
 ```
 
@@ -86,8 +86,8 @@ steps:
   - label: "terraform plan"
     branches: "!master"
     plugins:
-      - echoboomer/terraform#v1.2.10:
-          init_config: ["-input=false", "-backend-config=bucket=my_gcp_bucket", "-backend-config=prefix=my-prefix", "-backend-config=credentials=sa.json"]
+      - echoboomer/terraform#v1.2.11:
+          init_args: ["-input=false", "-backend-config=bucket=my_gcp_bucket", "-backend-config=prefix=my-prefix", "-backend-config=credentials=sa.json"]
           version: 0.12.21
       - artifacts#v1.2.0:
           upload: "tfplan"
@@ -96,9 +96,9 @@ steps:
     plugins:
       - artifacts#v1.2.0:
           download: "tfplan"
-      - echoboomer/terraform#v1.2.10:
+      - echoboomer/terraform#v1.2.11:
           apply_only: true
-          init_config: ["-input=false", "-backend-config=bucket=my_gcp_bucket", "-backend-config=prefix=my-prefix", "-backend-config=credentials=sa.json"]
+          init_args: ["-input=false", "-backend-config=bucket=my_gcp_bucket", "-backend-config=prefix=my-prefix", "-backend-config=credentials=sa.json"]
           version: 0.12.21
 ```
 
@@ -122,7 +122,7 @@ If this option is supplied, `apply` will automatically run if `BUILDKITE_BRANCH`
 
 If using a custom Docker image to run `terraform`, set it here. This should only be the `repo/image` string. Set the tag in `version`. Defaults to `hashicorp/terraform`.
 
-### `init_config` (Required, array of strings)
+### `init_args` (Required, array of strings)
 
 An array of separate strings specifying flags to pass to `terraform init`. This is required. Each argument should be quoted and passed in as a separate item.
 

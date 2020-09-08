@@ -13,7 +13,7 @@ configuration:
       type: boolean
     image:
       type: string
-    init_config:
+    init_args:
       type: [string, array]
     no_validate:
       type: boolean
@@ -26,4 +26,4 @@ configuration:
     workspace:
       type: string
   required:
-    - init_config
+    - init_args
