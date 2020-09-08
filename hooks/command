@@ -56,11 +56,9 @@ function terraform-run() {
 
   cd terraform
 
-  if [[ "${APPLY_ONLY}" == false ]]; then
-    echo "+++ :terraform: :buildkite: :hammer_and_wrench: Setting up Terraform environment..."
-    terraform-bin init ${INIT_CONFIG}
-    echo ""
-  fi
+  echo "+++ :terraform: :buildkite: :hammer_and_wrench: Setting up Terraform environment..."
+  terraform-bin init "${INIT_CONFIG}"
+  echo ""
 
   if [[ "${USE_WORKSPACES}" == true ]]; then
     terraform-bin workspace select ${WORKSPACE}
