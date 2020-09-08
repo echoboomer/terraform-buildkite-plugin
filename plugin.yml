@@ -26,4 +26,4 @@ configuration:
     workspace:
       type: string
   required:
-    - init_config
+    - init_args
