@@ -14,7 +14,7 @@ configuration:
     image:
       type: string
     init_args:
-      type: [string, array]
+      type: array
     no_validate:
       type: boolean
     skip_apply_no_diff:

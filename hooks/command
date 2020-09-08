@@ -113,11 +113,3 @@ function terraform-run() {
 }
 
 terraform-run
-
-paths=("foo" "bar")
-
-if [[ -n "${BUILDKITE_PLUGIN_CACHE_PATHS:-}" ]]; then
-  paths+=("$BUILDKITE_PLUGIN_CACHE_PATHS")
-fi
-
-echo ${paths[@]}
