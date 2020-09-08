@@ -43,22 +43,37 @@ function terraform-bin() {
 
 function terraform-run() {
   local APPLY=${BUILDKITE_PLUGIN_TERRAFORM_APPLY:-false}
-  local APPLY_ONLY=${BUILDKITE_PLUGIN_TERRAFORM_APPLY_ONLY:-false}
   local APPLY_MASTER=${BUILDKITE_PLUGIN_TERRAFORM_APPLY_MASTER:-false}
+  local APPLY_ONLY=${BUILDKITE_PLUGIN_TERRAFORM_APPLY_ONLY:-false}
   local BUILDKITE_BRANCH=${BUILDKITE_BRANCH:-}
   local DEBUG=${BUILDKITE_PLUGIN_TERRAFORM_DEBUG:-false}
   local IMAGE_NAME=${BUILDKITE_PLUGIN_TERRAFORM_IMAGE:-"hashicorp/terraform"}
   local INIT_ARGS="${BUILDKITE_PLUGIN_TERRAFORM_INIT_ARGS:-}"
   local NO_VALIDATE=${BUILDKITE_PLUGIN_TERRAFORM_NO_VALIDATE:-false}
-  local USE_WORKSPACES=${BUILDKITE_PLUGIN_TERRAFORM_USE_WORKSPACES:-false}
   local SKIP_APPLY_NO_DIFF=${BUILDKITE_PLUGIN_TERRAFORM_SKIP_APPLY_NO_DIFF:-false}
+  local USE_WORKSPACES=${BUILDKITE_PLUGIN_TERRAFORM_USE_WORKSPACES:-false}
   local VERSION=${BUILDKITE_PLUGIN_TERRAFORM_VERSION:-0.13.0}
   local WORKSPACE=${BUILDKITE_PLUGIN_TERRAFORM_WORKSPACE:-default}
+
+  if [[ "${DEBUG}" == true ]]; then
+    echo "--- :terraform: :buildkite: :hammer_and_wrench: Debug on - list local variables."
+    echo "APPLY: ${APPLY}"
+    echo "APPLY_MASTER: ${APPLY_MASTER}"
+    echo "APPLY_ONLY: ${APPLY_ONLY}"
+    echo "BUILDKITE_BRANCH: ${BUILDKITE_BRANCH}"
+    echo "IMAGE_NAME: ${IMAGE_NAME}"
+    echo "INIT_ARGS: ${INIT_ARGS}"
+    echo "NO_VALIDATE: ${NO_VALIDATE}"
+    echo "SKIP_APPLY_NO_DIFF: ${SKIP_APPLY_NO_DIFF}"
+    echo "USE_WORKSPACES: ${USE_WORKSPACES}"
+    echo "VERSION: ${VERSION}"
+    echo "WORKSPACE: ${WORKSPACE}"
+  fi
 
   cd terraform
 
   echo "+++ :terraform: :buildkite: :hammer_and_wrench: Setting up Terraform environment..."
-  if [[ ${DEBUG} == true ]]; then
+  if [[ "${DEBUG}" == true ]]; then
     echo "Running init command string: terraform init ${INIT_ARGS[@]}"
   fi
 
