@@ -49,6 +49,7 @@ function terraform-run() {
   local IMAGE_NAME=${BUILDKITE_PLUGIN_TERRAFORM_IMAGE:-"hashicorp/terraform"}
   local INIT_CONFIG=${BUILDKITE_PLUGIN_TERRAFORM_INIT_CONFIG}
   local USE_WORKSPACES=${BUILDKITE_PLUGIN_TERRAFORM_USE_WORKSPACES:-false}
+  local SKIP_APPLY_NO_DIFF=${BUILDKITE_PLUGIN_TERRAFORM_SKIP_APPLY_NO_DIFF:-false}
   local VERSION=${BUILDKITE_PLUGIN_TERRAFORM_VERSION:-0.13.0}
   local WORKSPACE=${BUILDKITE_PLUGIN_TERRAFORM_WORKSPACE:-default}
 
@@ -69,20 +70,35 @@ function terraform-run() {
 
   if [[ "${APPLY_ONLY}" == false ]]; then
     echo "+++ :terraform: :hourglass: Running Terraform plan..."
+
     if [[ "${USE_WORKSPACES}" == true ]]; then
-      terraform-bin plan -input=false -out tfplan-${WORKSPACE} -var-file="${WORKSPACE}-terraform.tfvars"
-      terraform-bin show -json tfplan-${WORKSPACE} > tfplan-${WORKSPACE}.json
+      terraform-bin plan -input=false -out tfplan -var-file="${WORKSPACE}-terraform.tfvars"
     else
       terraform-bin plan -input=false -out tfplan
-      terraform-bin show -json tfplan > tfplan.json
+    fi
+
+    # Capture plan output for setting variables and passing as artifacts.
+    terraform-bin show tfplan -no-color > tfplan.txt
+    terraform-bin show -json tfplan > tfplan.json
+
+    if grep -iFq "Plan: 0 to add, 0 to change, 0 to destroy." tfplan.txt; then
+      echo ""
+      echo "+++ :terraform: :white_check_mark: Exporting tf_diff=false to agent metadata."
+      buildkite-agent meta-data set "tf_diff" "false"
+      export TF_DIFF=false
+    else
+      echo ""
+      echo "+++ :terraform: :white_check_mark: Exporting tf_diff=true to agent metadata."
+      buildkite-agent meta-data set "tf_diff" "true"
+      export TF_DIFF=true
     fi
   fi
 
-  if [[ "${APPLY}" == true || "${APPLY_ONLY}" == true || ("${APPLY_MASTER}" == true && "${BUILDKITE_BRANCH}" == "master") ]]; then
-    echo "+++ :terraform: :hourglass: Running Terraform apply based on calculated plan..."
-    if [[ "${USE_WORKSPACES}" == true ]]; then
-      terraform-bin apply -input=false tfplan-${WORKSPACE}
-    else
+  if [[ "${TF_DIFF}" == false && "${SKIP_APPLY_NO_DIFF}" == true ]]; then
+    echo "+++ :terraform: :zzz: Skipping apply step."
+  else
+    if [[ "${APPLY}" == true || "${APPLY_ONLY}" == true || ("${APPLY_MASTER}" == true && "${BUILDKITE_BRANCH}" == "master") ]]; then
+      echo "+++ :terraform: :hourglass: Running Terraform apply based on calculated plan..."
       terraform-bin apply -input=false tfplan
     fi
   fi
