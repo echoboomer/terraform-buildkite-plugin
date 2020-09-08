@@ -90,12 +90,12 @@ steps:
           init_config: "-input=false -backend-config=bucket=my_gcp_bucket -backend-config=prefix=my-prefix -backend-config=credentials=sa.json"
           version: 0.12.21
       - artifacts#v1.2.0:
-          upload: "terraform/tfplan"
+          upload: "tfplan"
   - label: "terraform apply"
     branches: "master"
     plugins:
       - artifacts#v1.2.0:
-          download: "terraform/tfplan"
+          download: "tfplan"
       - echoboomer/terraform#v1.2.5:
           apply_only: true
           init_config: "-input=false -backend-config=bucket=my_gcp_bucket -backend-config=prefix=my-prefix -backend-config=credentials=sa.json"
