@@ -48,7 +48,11 @@ steps:
   - label: "terraform"
     plugins:
       - echoboomer/terraform#v1.2.18:
-          init_args: ["-input=false", "-backend-config=bucket=my_gcp_bucket", "-backend-config=prefix=my-prefix", "-backend-config=credentials=sa.json"]
+          init_args:
+            - "-input=false"
+            - "-backend-config=bucket=my_gcp_bucket"
+            - "-backend-config=prefix=my-prefix"
+            - "-backend-config=credentials=sa.json"
 ```
 
 While no commands are required, out of the box behavior may be undesirable without at least `init_args`.
@@ -58,7 +62,11 @@ steps:
   - label: "terraform"
     plugins:
       - echoboomer/terraform#v1.2.18:
-          init_args: ["-input=false", "-backend-config=bucket=my_gcp_bucket", "-backend-config=prefix=my-prefix", "-backend-config=credentials=sa.json"]
+          init_args:
+            - "-input=false"
+            - "-backend-config=bucket=my_gcp_bucket"
+            - "-backend-config=prefix=my-prefix"
+            - "-backend-config=credentials=sa.json"
           image: myrepo/mycustomtfimage
           version: 0.12.21
           use_workspaces: true
@@ -73,7 +81,11 @@ steps:
     plugins:
       - echoboomer/terraform#v1.2.18:
           apply_master: true
-          init_args: ["-input=false", "-backend-config=bucket=my_gcp_bucket", "-backend-config=prefix=my-prefix", "-backend-config=credentials=sa.json"]
+          init_args:
+            - "-input=false"
+            - "-backend-config=bucket=my_gcp_bucket"
+            - "-backend-config=prefix=my-prefix"
+            - "-backend-config=credentials=sa.json"
           version: 0.12.21
 ```
 
@@ -87,7 +99,11 @@ steps:
     branches: "!master"
     plugins:
       - echoboomer/terraform#v1.2.18:
-          init_args: ["-input=false", "-backend-config=bucket=my_gcp_bucket", "-backend-config=prefix=my-prefix", "-backend-config=credentials=sa.json"]
+          init_args:
+            - "-input=false"
+            - "-backend-config=bucket=my_gcp_bucket"
+            - "-backend-config=prefix=my-prefix"
+            - "-backend-config=credentials=sa.json"
           version: 0.12.21
       - artifacts#v1.2.0:
           upload: "tfplan"
@@ -98,7 +114,11 @@ steps:
           download: "tfplan"
       - echoboomer/terraform#v1.2.18:
           apply_only: true
-          init_args: ["-input=false", "-backend-config=bucket=my_gcp_bucket", "-backend-config=prefix=my-prefix", "-backend-config=credentials=sa.json"]
+          init_args:
+            - "-input=false"
+            - "-backend-config=bucket=my_gcp_bucket"
+            - "-backend-config=prefix=my-prefix"
+            - "-backend-config=credentials=sa.json"
           version: 0.12.21
 ```
 
