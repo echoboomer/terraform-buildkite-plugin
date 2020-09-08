@@ -47,7 +47,7 @@ Add the following to your `pipeline.yml`:
 steps:
   - label: "terraform"
     plugins:
-      - echoboomer/terraform#v1.2.4:
+      - echoboomer/terraform#v1.2.5:
           init_config: "-input=false -backend-config=bucket=my_gcp_bucket -backend-config=prefix=my-prefix -backend-config=credentials=sa.json"
 ```
 
@@ -57,7 +57,7 @@ This is the only required parameter. You can pass in other options to adjust beh
 steps:
   - label: "terraform"
     plugins:
-      - echoboomer/terraform#v1.2.4:
+      - echoboomer/terraform#v1.2.5:
           init_config: "-input=false -backend-config=bucket=my_gcp_bucket -backend-config=prefix=my-prefix -backend-config=credentials=sa.json"
           image: myrepo/mycustomtfimage
           version: 0.12.21
@@ -71,7 +71,7 @@ If you want an out of the box solution that simply executes a `plan` on non-mast
 steps:
   - label: "terraform"
     plugins:
-      - echoboomer/terraform#v1.2.4:
+      - echoboomer/terraform#v1.2.5:
           apply_master: true
           init_config: "-input=false -backend-config=bucket=my_gcp_bucket -backend-config=prefix=my-prefix -backend-config=credentials=sa.json"
           version: 0.12.21
@@ -86,7 +86,7 @@ steps:
   - label: "terraform plan"
     branches: "!master"
     plugins:
-      - echoboomer/terraform#v1.2.4:
+      - echoboomer/terraform#v1.2.5:
           init_config: "-input=false -backend-config=bucket=my_gcp_bucket -backend-config=prefix=my-prefix -backend-config=credentials=sa.json"
           version: 0.12.21
       - artifacts#v1.2.0:
@@ -96,7 +96,7 @@ steps:
     plugins:
       - artifacts#v1.2.0:
           download: "terraform/tfplan"
-      - echoboomer/terraform#v1.2.4:
+      - echoboomer/terraform#v1.2.5:
           apply_only: true
           init_config: "-input=false -backend-config=bucket=my_gcp_bucket -backend-config=prefix=my-prefix -backend-config=credentials=sa.json"
           version: 0.12.21
@@ -125,6 +125,10 @@ If using a custom Docker image to run `terraform`, set it here. This should only
 ### `init_config` (Required, string)
 
 A string specifying flags to pass to `terraform init`. This is required.
+
+### `no_validate` (Not Required, boolean)
+
+If provided and set to `true`, the `terraform validate` step will be skipped.
 
 ### `skip_apply_no_diff` (Not Required, boolean)
 

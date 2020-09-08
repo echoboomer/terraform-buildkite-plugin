@@ -15,6 +15,10 @@ configuration:
       type: string
     init_config:
       type: string
+    no_validate:
+      type: boolean
+    skip_apply_no_diff:
+      type: boolean
     use_workspaces:
       type: boolean
     version:
