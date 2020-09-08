@@ -11,6 +11,8 @@ configuration:
       type: boolean
     apply_master:
       type: boolean
+    debug:
+      type: boolean
     image:
       type: string
     init_args:

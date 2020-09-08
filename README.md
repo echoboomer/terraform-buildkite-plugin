@@ -47,7 +47,7 @@ Add the following to your `pipeline.yml`:
 steps:
   - label: "terraform"
     plugins:
-      - echoboomer/terraform#v1.2.15:
+      - echoboomer/terraform#v1.2.16:
           init_args: ["-input=false", "-backend-config=bucket=my_gcp_bucket", "-backend-config=prefix=my-prefix", "-backend-config=credentials=sa.json"]
 ```
 
@@ -57,7 +57,7 @@ While no commands are required, out of the box behavior may be undesirable witho
 steps:
   - label: "terraform"
     plugins:
-      - echoboomer/terraform#v1.2.15:
+      - echoboomer/terraform#v1.2.16:
           init_args: ["-input=false", "-backend-config=bucket=my_gcp_bucket", "-backend-config=prefix=my-prefix", "-backend-config=credentials=sa.json"]
           image: myrepo/mycustomtfimage
           version: 0.12.21
@@ -71,7 +71,7 @@ If you want an out of the box solution that simply executes a `plan` on non-mast
 steps:
   - label: "terraform"
     plugins:
-      - echoboomer/terraform#v1.2.15:
+      - echoboomer/terraform#v1.2.16:
           apply_master: true
           init_args: ["-input=false", "-backend-config=bucket=my_gcp_bucket", "-backend-config=prefix=my-prefix", "-backend-config=credentials=sa.json"]
           version: 0.12.21
@@ -86,7 +86,7 @@ steps:
   - label: "terraform plan"
     branches: "!master"
     plugins:
-      - echoboomer/terraform#v1.2.15:
+      - echoboomer/terraform#v1.2.16:
           init_args: ["-input=false", "-backend-config=bucket=my_gcp_bucket", "-backend-config=prefix=my-prefix", "-backend-config=credentials=sa.json"]
           version: 0.12.21
       - artifacts#v1.2.0:
@@ -96,7 +96,7 @@ steps:
     plugins:
       - artifacts#v1.2.0:
           download: "tfplan"
-      - echoboomer/terraform#v1.2.15:
+      - echoboomer/terraform#v1.2.16:
           apply_only: true
           init_args: ["-input=false", "-backend-config=bucket=my_gcp_bucket", "-backend-config=prefix=my-prefix", "-backend-config=credentials=sa.json"]
           version: 0.12.21
@@ -117,6 +117,10 @@ If this option is supplied, `plan` is skipped and `apply` is forced. This is use
 ### `apply_master` (Not Required, boolean)
 
 If this option is supplied, `apply` will automatically run if `BUILDKITE_BRANCH` is `master`. This allows you to define a single `pipeline.yml` step that will provide a `plan` on pull request and `apply` on master merge.
+
+### `debug` (Not Required, boolean)
+
+If providing this option and setting it to `true`, additional output is provided to help troubleshoot.
 
 ### `image` (Not Required, string)
 

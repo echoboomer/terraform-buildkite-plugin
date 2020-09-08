@@ -46,6 +46,7 @@ function terraform-run() {
   local APPLY_ONLY=${BUILDKITE_PLUGIN_TERRAFORM_APPLY_ONLY:-false}
   local APPLY_MASTER=${BUILDKITE_PLUGIN_TERRAFORM_APPLY_MASTER:-false}
   local BUILDKITE_BRANCH=${BUILDKITE_BRANCH:-}
+  local DEBUG=${BUILDKITE_PLUGIN_TERRAFORM_DEBUG:-false}
   local IMAGE_NAME=${BUILDKITE_PLUGIN_TERRAFORM_IMAGE:-"hashicorp/terraform"}
   local INIT_ARGS="${BUILDKITE_PLUGIN_TERRAFORM_INIT_ARGS:-}"
   local NO_VALIDATE=${BUILDKITE_PLUGIN_TERRAFORM_NO_VALIDATE:-false}
@@ -57,6 +58,10 @@ function terraform-run() {
   cd terraform
 
   echo "+++ :terraform: :buildkite: :hammer_and_wrench: Setting up Terraform environment..."
+  if [[ ${DEBUG} == true ]]; then
+    echo "Running init command string: terraform init ${INIT_ARGS[@]}"
+  fi
+
   terraform-bin init ${INIT_ARGS[@]}
   echo ""
 
