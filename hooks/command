@@ -59,7 +59,7 @@ function terraform-run() {
   echo "+++ :terraform: :buildkite: :hammer_and_wrench: Setting up Terraform environment..."
 
   init_args=()
-  init_args+=("$BUILDKITE_PLUGIN_TERRAFORM_INIT_CONFIG")
+  init_args+=("$BUILDKITE_PLUGIN_TERRAFORM_INIT_ARGS")
 
   terraform-bin init ${init_args[@]}
   echo ""
