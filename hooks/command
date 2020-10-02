@@ -43,7 +43,7 @@ function prefix_read_list() {
     local parameter="${prefix}_${i}"
     while [[ -n "${!parameter:-}" ]]; do
       echo "${!parameter}"
-      i=$((i+1))
+      i=$((i + 1))
       parameter="${prefix}_${i}"
     done
   elif [[ -n "${!prefix:-}" ]]; then
@@ -54,14 +54,33 @@ function prefix_read_list() {
 function terraform-bin() {
   local DOCKER_IMAGE="${IMAGE_NAME}:${VERSION}"
 
-  docker run --rm -it \
-    -e SSH_AUTH_SOCK \
-    -v $SSH_AUTH_SOCK:$SSH_AUTH_SOCK \
-    --mount "type=bind,src=$PWD,dst=/svc" \
-    --mount "type=bind,src=$KNOWN_HOSTS_FILE,dst=/root/.ssh/known_hosts" \
-    -w /svc \
-    $DOCKER_IMAGE \
+  docker_args=()
+
+  docker_args+=(
+    "--rm"
+    "-it"
+    "-e" "SSH_AUTH_SOCK"
+    "-v" "$SSH_AUTH_SOCK:$SSH_AUTH_SOCK"
+    "-v" "$PWD:/svc"
+    "-v" "$KNOWN_HOSTS_FILE:/root/.ssh/known_hosts"
+  )
+
+  extra_envs=()
+  while read -r line; do
+    [[ -n "$line" ]] && extra_envs+=("$line")
+  done <<< "$(plugin_read_list ENV)"
+
+  for e in ${extra_envs[@]}; do
+    docker_args+=("--env" "$e")
+  done
+
+  docker_args+=(
+    "-w" "/svc"
+    "$DOCKER_IMAGE"
     "${@}"
+  )
+
+  docker run $(printf "%q " "${docker_args[@]}")
 }
 
 function terraform-run() {
@@ -79,7 +98,7 @@ function terraform-run() {
 
   # Set arguments for terraform init.
   args=()
-  while read -r line ; do
+  while read -r line; do
     [[ -n "$line" ]] && args+=("$line")
   done <<< "$(plugin_read_list INIT_ARGS)"
 
