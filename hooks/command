@@ -68,7 +68,7 @@ function terraform-bin() {
   extra_envs=()
   while read -r line; do
     [[ -n "$line" ]] && extra_envs+=("$line")
-  done <<< "$(plugin_read_list EXTRA_ENV)"
+  done <<< "$(plugin_read_list ENV)"
 
   for e in ${extra_envs[@]}; do
     docker_args+=("--env" "$e")
