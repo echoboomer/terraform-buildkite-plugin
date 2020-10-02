@@ -80,6 +80,11 @@ function terraform-bin() {
     "${@}"
   )
 
+  if [[ "${DEBUG}" == true ]]; then
+    echo "--- :terraform: :buildkite: :hammer_and_wrench: Debug on - show Docker command string."
+    echo "docker run $(printf "%q " "${docker_args[@]}")"
+  fi
+
   docker run $(printf "%q " "${docker_args[@]}")
 }
 
