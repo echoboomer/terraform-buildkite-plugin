@@ -70,7 +70,7 @@ function terraform-bin() {
     [[ -n "$line" ]] && extra_envs+=("$line")
   done <<< "$(plugin_read_list ENV)"
 
-  for e in ${extra_envs[@]}; do
+  for e in ${extra_envs[@]-}; do
     docker_args+=("--env" "$e")
   done
 
