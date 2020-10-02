@@ -13,6 +13,8 @@ configuration:
       type: boolean
     debug:
       type: boolean
+    env:
+      type: [string, array]
     image:
       type: string
     init_args:
