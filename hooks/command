@@ -62,7 +62,7 @@ function terraform-bin() {
     "-e" "SSH_AUTH_SOCK"
     "-v" "$SSH_AUTH_SOCK:$SSH_AUTH_SOCK"
     "-v" "$PWD:/svc"
-    "-v" "$KNOWN_HOSTS_FILE,/root/.ssh/known_hosts"
+    "-v" "$KNOWN_HOSTS_FILE:/root/.ssh/known_hosts"
   )
 
   extra_envs=()
