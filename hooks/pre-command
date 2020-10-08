@@ -1,0 +1,14 @@
+#!/bin/bash
+
+# if a pre-command has been specified, run it now
+PRECOMMAND=${BUILDKITE_PLUGIN_TERRAFORM_PRECOMMAND:-false}
+
+if [ "$PRECOMMAND" != "false" ]; then
+    if [ -f "$PRECOMMAND" ]; then
+        # if it's a file, then just source it
+        source $PRECOMMAND
+    else
+        # otherwise, attempt to execute it directly
+        eval $PRECOMMAND
+    fi
+fi

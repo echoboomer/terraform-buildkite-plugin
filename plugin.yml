@@ -29,3 +29,5 @@ configuration:
       type: string
     workspace:
       type: string
+    precommand:
+      type: string
