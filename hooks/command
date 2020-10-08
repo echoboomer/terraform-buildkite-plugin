@@ -74,6 +74,15 @@ function terraform-bin() {
     docker_args+=("--env" "$e")
   done
 
+  extra_volumes=()
+  while read -r line; do
+    [[ -n "$line" ]] && extra_volumes+=("$line")
+  done <<< "$(plugin_read_list VOLUMES)"
+
+  for v in ${extra_volumes[@]-}; do
+    docker_args+=("-v" "$v")
+  done
+
   docker_args+=(
     "-w" "/svc"
     "$DOCKER_IMAGE"

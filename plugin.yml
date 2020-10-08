@@ -21,13 +21,15 @@ configuration:
       type: [string, array]
     no_validate:
       type: boolean
+    precommand:
+      type: string
     skip_apply_no_diff:
       type: boolean
     use_workspaces:
       type: boolean
     version:
       type: string
+    volumes:
+      type: [string, array]
     workspace:
-      type: string
-    precommand:
       type: string

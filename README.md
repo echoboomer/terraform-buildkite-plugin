@@ -47,7 +47,7 @@ Add the following to your `pipeline.yml`:
 steps:
   - label: "terraform"
     plugins:
-      - echoboomer/terraform#v1.2.21:
+      - echoboomer/terraform#v1.2.23:
           init_args:
             - "-input=false"
             - "-backend-config=bucket=my_gcp_bucket"
@@ -61,7 +61,7 @@ While no commands are required, out of the box behavior may be undesirable witho
 steps:
   - label: "terraform"
     plugins:
-      - echoboomer/terraform#v1.2.21:
+      - echoboomer/terraform#v1.2.23:
           init_args:
             - "-input=false"
             - "-backend-config=bucket=my_gcp_bucket"
@@ -79,7 +79,7 @@ To pass in extra environment variables to the Docker container:
 steps:
   - label: "terraform"
     plugins:
-      - echoboomer/terraform#v1.2.21:
+      - echoboomer/terraform#v1.2.23:
           env:
             - "FOO=foo"
             - "BAR=baz"
@@ -100,7 +100,7 @@ If you want an out of the box solution that simply executes a `plan` on non-mast
 steps:
   - label: "terraform"
     plugins:
-      - echoboomer/terraform#v1.2.21:
+      - echoboomer/terraform#v1.2.23:
           apply_master: true
           init_args:
             - "-input=false"
@@ -119,7 +119,7 @@ steps:
   - label: "terraform plan"
     branches: "!master"
     plugins:
-      - echoboomer/terraform#v1.2.21:
+      - echoboomer/terraform#v1.2.23:
           init_args:
             - "-input=false"
             - "-backend-config=bucket=my_gcp_bucket"
@@ -133,7 +133,7 @@ steps:
     plugins:
       - artifacts#v1.2.0:
           download: "tfplan"
-      - echoboomer/terraform#v1.2.21:
+      - echoboomer/terraform#v1.2.23:
           apply_only: true
           init_args:
             - "-input=false"
@@ -179,6 +179,10 @@ Arguments to pass to `terraform init`. Can be a `string` or `array` depending on
 
 If provided and set to `true`, the `terraform validate` step will be skipped.
 
+### `precommand` (Not Required, string)
+
+Adds a `pre-command` script that will run before the main Terraform plugin runs. This could be useful for downloading credentials or other setup steps before running Terraform.
+
 ### `skip_apply_no_diff` (Not Required, boolean)
 
 If this is provided and set to `true`, the `apply` step will be skipped if `TF_DIFF` is also `false`. The latter variable is automatically exported during every `plan` step.
@@ -190,6 +194,10 @@ If you need to use Terraform workspaces in your repository, set this to `true`. 
 ### `version` (Not Required, string)
 
 Which version of Terraform to use. Defaults to `0.13.0`. This is the tag applied to the Docker image, whether using the default of `hashicorp/terraform` or your own custom image.
+
+### `volumes` (Not Required, string, array)
+
+Additional volume mount statements to provide to the Docker container in the form `foo:bar`. Uses `-v` on the backend.
 
 ### `workspace` (Not Required, string)
 
