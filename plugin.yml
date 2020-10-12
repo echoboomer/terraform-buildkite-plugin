@@ -27,6 +27,8 @@ configuration:
       type: boolean
     use_workspaces:
       type: boolean
+    auto_create_workspace:
+      type: boolean
     version:
       type: string
     volumes:
