@@ -109,6 +109,7 @@ function terraform-run() {
   local USE_WORKSPACES=${BUILDKITE_PLUGIN_TERRAFORM_USE_WORKSPACES:-false}
   local VERSION=${BUILDKITE_PLUGIN_TERRAFORM_VERSION:-0.13.0}
   local WORKSPACE=${BUILDKITE_PLUGIN_TERRAFORM_WORKSPACE:-default}
+  local AUTO_CREATE_WORKSPACE=${BUILDKITE_PLUGIN_TERRAFORM_AUTO_CREATE_WORKSPACE:-true}
 
   # Set arguments for terraform init.
   args=()
@@ -129,6 +130,7 @@ function terraform-run() {
     echo "USE_WORKSPACES: ${USE_WORKSPACES}"
     echo "VERSION: ${VERSION}"
     echo "WORKSPACE: ${WORKSPACE}"
+    echo "AUTO_CREATE_WORKSPACE: ${AUTO_CREATE_WORKSPACE}"
   fi
 
   cd terraform
@@ -142,7 +144,11 @@ function terraform-run() {
   echo ""
 
   if [[ "${USE_WORKSPACES}" == true ]]; then
-    terraform-bin workspace select ${WORKSPACE}
+    if [[ "${AUTO_CREATE_WORKSPACE}" == true ]]; then
+      terraform-bin workspace select ${WORKSPACE} || terraform-bin workspace new ${WORKSPACE}
+    else
+      terraform-bin workspace select ${WORKSPACE}
+    fi
     echo ""
   fi
 

@@ -22,7 +22,7 @@ It's up to you to define what flags are used for `terraform init` by taking adva
 
 #### Workspaces
 
-If using a Terraform workspace, the workspace is selected before running `plan` and will also be used before running `apply`.
+If using a Terraform workspace, the workspace is selected before running `plan` and will also be used before running `apply`. By default, if the workspace doesn't exist it will be created. You may disable this behavior (and let the plugin explicitly fail if the workspace does not exist) by setting `auto_create_workspace: false` in the plugin config.
 
 If using a Terraform workspace, the plugin will also look for a `.tfvars` file in the form `WORKSPACE_NAME-terraform.tfvars`.
 
