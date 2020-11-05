@@ -110,6 +110,7 @@ function terraform-run() {
   local VERSION=${BUILDKITE_PLUGIN_TERRAFORM_VERSION:-0.13.0}
   local WORKSPACE=${BUILDKITE_PLUGIN_TERRAFORM_WORKSPACE:-default}
   local AUTO_CREATE_WORKSPACE=${BUILDKITE_PLUGIN_TERRAFORM_AUTO_CREATE_WORKSPACE:-true}
+  local WORKSPACE_METADATA_KEY=${BUILDKITE_PLUGIN_TERRAFORM_WORKSPACE_METADATA_KEY:-}
 
   # Set arguments for terraform init.
   args=()
@@ -131,6 +132,7 @@ function terraform-run() {
     echo "VERSION: ${VERSION}"
     echo "WORKSPACE: ${WORKSPACE}"
     echo "AUTO_CREATE_WORKSPACE: ${AUTO_CREATE_WORKSPACE}"
+    echo "WORKSPACE_METADATA_KEY ${WORKSPACE_METADATA_KEY}"
   fi
 
   cd terraform
@@ -144,6 +146,10 @@ function terraform-run() {
   echo ""
 
   if [[ "${USE_WORKSPACES}" == true ]]; then
+    if [[ -n ${WORKSPACE_METADATA_KEY} ]]; then
+      WORKSPACE=$(buildkite-agent meta-data get "${WORKSPACE_METADATA_KEY}")
+      echo "Overrode WORKSPACE with metadata key: ${WORKSPACE_METADATA_KEY}. Set WORKSPACE=${WORKSPACE}"
+    fi;
     if [[ "${AUTO_CREATE_WORKSPACE}" == true ]]; then
       terraform-bin workspace select ${WORKSPACE} || terraform-bin workspace new ${WORKSPACE}
     else

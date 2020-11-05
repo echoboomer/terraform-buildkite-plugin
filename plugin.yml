@@ -35,3 +35,5 @@ configuration:
       type: [string, array]
     workspace:
       type: string
+    workspace_metadata_key:
+      type: string
