@@ -132,7 +132,9 @@ steps:
     branches: "master"
     plugins:
       - artifacts#v1.2.0:
-          download: "tfplan"
+          download:
+            from: "tfplan"
+            to: "terraform/tfplan"
       - echoboomer/terraform#v1.2.23:
           apply_only: true
           init_args:
