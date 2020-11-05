@@ -190,6 +190,8 @@ function terraform-run() {
 
     echo "--- :terraform: :buildkite: :floppy_disk: Listing directory contents for record keeping."
     ls -al .
+  else
+    export TF_DIFF=true
   fi
 
   if [[ "${APPLY}" == true || "${APPLY_ONLY}" == true || ("${APPLY_MASTER}" == true && "${BUILDKITE_BRANCH}" == "master") ]]; then
