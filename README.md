@@ -203,6 +203,13 @@ Additional volume mount statements to provide to the Docker container in the for
 
 If setting `use_workspaces` to `true`, pass in the Terraform workspace name here.
 
+### `workspace_metadata_key` (Not Required, string)
+
+If setting `use_workspaces` to `true`, pass in a [Buildkite metadata](https://buildkite.com/docs/pipelines/build-meta-data) 
+key and the plugin will set the Terraform workspace based on the metadata value. 
+
+Note: If `workspace` is also set it will be overridden.   
+
 ## Developing
 
 To run the linting tool:
