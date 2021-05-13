@@ -47,7 +47,7 @@ Add the following to your `pipeline.yml`:
 steps:
   - label: "terraform"
     plugins:
-      - echoboomer/terraform#v1.2.23:
+      - echoboomer/terraform#v1.2.24:
           init_args:
             - "-input=false"
             - "-backend-config=bucket=my_gcp_bucket"
@@ -61,7 +61,7 @@ While no commands are required, out of the box behavior may be undesirable witho
 steps:
   - label: "terraform"
     plugins:
-      - echoboomer/terraform#v1.2.23:
+      - echoboomer/terraform#v1.2.24:
           init_args:
             - "-input=false"
             - "-backend-config=bucket=my_gcp_bucket"
@@ -79,7 +79,7 @@ To pass in extra environment variables to the Docker container:
 steps:
   - label: "terraform"
     plugins:
-      - echoboomer/terraform#v1.2.23:
+      - echoboomer/terraform#v1.2.24:
           env:
             - "FOO=foo"
             - "BAR=baz"
@@ -100,7 +100,7 @@ If you want an out of the box solution that simply executes a `plan` on non-mast
 steps:
   - label: "terraform"
     plugins:
-      - echoboomer/terraform#v1.2.23:
+      - echoboomer/terraform#v1.2.24:
           apply_master: true
           init_args:
             - "-input=false"
@@ -119,7 +119,7 @@ steps:
   - label: "terraform plan"
     branches: "!master"
     plugins:
-      - echoboomer/terraform#v1.2.23:
+      - echoboomer/terraform#v1.2.24:
           init_args:
             - "-input=false"
             - "-backend-config=bucket=my_gcp_bucket"
@@ -133,7 +133,7 @@ steps:
     plugins:
       - artifacts#v1.2.0:
           download: "tfplan"
-      - echoboomer/terraform#v1.2.23:
+      - echoboomer/terraform#v1.2.24:
           apply_only: true
           init_args:
             - "-input=false"
@@ -144,6 +144,22 @@ steps:
 ```
 
 This is useful if you want more control over the behavior of the plugin or if it is necessary to split apart the `apply` step for whatever reason.
+
+If you want to destroy resources, you can specify `destroy`:
+
+```yml
+steps:
+  - label: "terraform"
+    plugins:
+      - echoboomer/terraform#v1.2.24:
+          destroy: true
+          init_args:
+            - "-input=false"
+            - "-backend-config=bucket=my_gcp_bucket"
+            - "-backend-config=prefix=my-prefix"
+            - "-backend-config=credentials=sa.json"
+          version: 0.12.21
+```
 
 ## Configuration
 
@@ -158,6 +174,10 @@ If this option is supplied, `plan` is skipped and `apply` is forced. This is use
 ### `apply_master` (Not Required, boolean)
 
 If this option is supplied, `apply` will automatically run if `BUILDKITE_BRANCH` is `master`. This allows you to define a single `pipeline.yml` step that will provide a `plan` on pull request and `apply` on master merge.
+
+### `destroy` (Not Required, boolean)
+
+If this option is supplied, `destroy` is executed.
 
 ### `debug` (Not Required, boolean)
 
