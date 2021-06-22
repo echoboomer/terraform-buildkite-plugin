@@ -149,7 +149,7 @@ function terraform-run() {
     if [[ -n ${WORKSPACE_METADATA_KEY} ]]; then
       WORKSPACE=$(buildkite-agent meta-data get "${WORKSPACE_METADATA_KEY}")
       echo "Overrode WORKSPACE with metadata key: ${WORKSPACE_METADATA_KEY}. Set WORKSPACE=${WORKSPACE}"
-    fi;
+    fi
     if [[ "${AUTO_CREATE_WORKSPACE}" == true ]]; then
       terraform-bin workspace select ${WORKSPACE} || terraform-bin workspace new ${WORKSPACE}
     else
@@ -189,6 +189,8 @@ function terraform-run() {
 
     echo "--- :terraform: :buildkite: :floppy_disk: Listing directory contents for record keeping."
     ls -al .
+  else
+    export TF_DIFF=true
   fi
 
   if [[ "${APPLY}" == true || "${APPLY_ONLY}" == true || ("${APPLY_MASTER}" == true && "${BUILDKITE_BRANCH}" == "master") ]]; then
