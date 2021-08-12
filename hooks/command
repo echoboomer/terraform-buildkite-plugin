@@ -204,7 +204,7 @@ function terraform-run() {
 
   if [[ "${DESTROY}" == true ]]; then
     echo "+++ :terraform: :buildkite: :hourglass: Running Terraform destroy..."
-    terraform-bin destroy -input=false
+    terraform-bin destroy -input=false -auto-approve
   fi
 }
 
