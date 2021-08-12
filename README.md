@@ -39,7 +39,11 @@ The plugin does a few things automatically:
 - At the end of the Terraform `plan` step, the plugin automatically generates `tfplan.json` for a JSON formatted version of the plan output in the `terraform/` directory. This is useful if you'd like to use a plugin like [artifacts](https://github.com/buildkite-plugins/artifacts-buildkite-plugin) to move your Terraform plan between steps, which is even more useful if you've opted to make two separate steps with a dedicated `apply` step with `plan` disabled. We've provided an example of this below. You can also run the JSON output through something like OPA.
 - At the end of the Terraform `plan` step, the plugin sets the Buildkite meta-data field `tf_diff` to either `true` or `false` based on whether or not there are changes in the plan.
 
-## Example
+## Versioning
+
+Leaving the `#v1.x.x` tag off of the end of the plugin name will automatically pull down the latest version.
+
+## Examples
 
 Add the following to your `pipeline.yml`:
 
@@ -47,7 +51,7 @@ Add the following to your `pipeline.yml`:
 steps:
   - label: "terraform"
     plugins:
-      - echoboomer/terraform#v1.2.24:
+      - echoboomer/terraform#v1.2.25:
           init_args:
             - "-input=false"
             - "-backend-config=bucket=my_gcp_bucket"
@@ -61,7 +65,7 @@ While no commands are required, out of the box behavior may be undesirable witho
 steps:
   - label: "terraform"
     plugins:
-      - echoboomer/terraform#v1.2.24:
+      - echoboomer/terraform#v1.2.25:
           init_args:
             - "-input=false"
             - "-backend-config=bucket=my_gcp_bucket"
@@ -79,7 +83,7 @@ To pass in extra environment variables to the Docker container:
 steps:
   - label: "terraform"
     plugins:
-      - echoboomer/terraform#v1.2.24:
+      - echoboomer/terraform#v1.2.25:
           env:
             - "FOO=foo"
             - "BAR=baz"
@@ -100,7 +104,7 @@ If you want an out of the box solution that simply executes a `plan` on non-mast
 steps:
   - label: "terraform"
     plugins:
-      - echoboomer/terraform#v1.2.24:
+      - echoboomer/terraform#v1.2.25:
           apply_master: true
           init_args:
             - "-input=false"
@@ -119,7 +123,7 @@ steps:
   - label: "terraform plan"
     branches: "!master"
     plugins:
-      - echoboomer/terraform#v1.2.24:
+      - echoboomer/terraform#v1.2.25:
           init_args:
             - "-input=false"
             - "-backend-config=bucket=my_gcp_bucket"
@@ -133,7 +137,7 @@ steps:
     plugins:
       - artifacts#v1.2.0:
           download: "tfplan"
-      - echoboomer/terraform#v1.2.24:
+      - echoboomer/terraform#v1.2.25:
           apply_only: true
           init_args:
             - "-input=false"
@@ -151,7 +155,7 @@ If you want to destroy resources, you can specify `destroy`:
 steps:
   - label: "terraform"
     plugins:
-      - echoboomer/terraform#v1.2.24:
+      - echoboomer/terraform#v1.2.25:
           destroy: true
           init_args:
             - "-input=false"
