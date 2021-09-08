@@ -1,7 +1,7 @@
-version: "2"
+version: '2'
 services:
   lint:
     image: buildkite/plugin-linter
-    command: ["--id", "echoboomer/terraform"]
+    command: ['--id', 'echoboomer/terraform']
     volumes:
-      - ".:/plugin:ro"
+      - '.:/plugin:ro'
