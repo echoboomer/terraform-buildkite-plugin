@@ -1,1 +1,4 @@
 .vscode/
+terraform/.terraform*
+terraform/tfplan*
+terraform/terraform.tfstate

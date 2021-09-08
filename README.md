@@ -51,7 +51,7 @@ Add the following to your `pipeline.yml`:
 steps:
   - label: "terraform"
     plugins:
-      - echoboomer/terraform#v1.2.25:
+      - echoboomer/terraform#v1.3.0:
           init_args:
             - "-input=false"
             - "-backend-config=bucket=my_gcp_bucket"
@@ -65,7 +65,7 @@ While no commands are required, out of the box behavior may be undesirable witho
 steps:
   - label: "terraform"
     plugins:
-      - echoboomer/terraform#v1.2.25:
+      - echoboomer/terraform#v1.3.0:
           init_args:
             - "-input=false"
             - "-backend-config=bucket=my_gcp_bucket"
@@ -83,7 +83,7 @@ To pass in extra environment variables to the Docker container:
 steps:
   - label: "terraform"
     plugins:
-      - echoboomer/terraform#v1.2.25:
+      - echoboomer/terraform#v1.3.0:
           env:
             - "FOO=foo"
             - "BAR=baz"
@@ -104,7 +104,7 @@ If you want an out of the box solution that simply executes a `plan` on non-mast
 steps:
   - label: "terraform"
     plugins:
-      - echoboomer/terraform#v1.2.25:
+      - echoboomer/terraform#v1.3.0:
           apply_master: true
           init_args:
             - "-input=false"
@@ -123,7 +123,7 @@ steps:
   - label: "terraform plan"
     branches: "!master"
     plugins:
-      - echoboomer/terraform#v1.2.25:
+      - echoboomer/terraform#v1.3.0:
           init_args:
             - "-input=false"
             - "-backend-config=bucket=my_gcp_bucket"
@@ -137,7 +137,7 @@ steps:
     plugins:
       - artifacts#v1.2.0:
           download: "tfplan"
-      - echoboomer/terraform#v1.2.25:
+      - echoboomer/terraform#v1.3.0:
           apply_only: true
           init_args:
             - "-input=false"
@@ -167,6 +167,10 @@ If this option is supplied, `apply` will automatically run if `BUILDKITE_BRANCH`
 
 If providing this option and setting it to `true`, additional output is provided to help troubleshoot.
 
+### `disable_ssh_keyscan` (Not Required, boolean)
+
+Disables the `ssh-keyscan` command which will add `github.com` to `known_hosts` to prevent hanging when referencing modules based in GitHub.
+
 ### `env` (Not Required, string, array)
 
 Extra environment variables to pass to the Docker container.
@@ -178,6 +182,10 @@ If using a custom Docker image to run `terraform`, set it here. This should only
 ### `init_args` (Not Required, string, array)
 
 Arguments to pass to `terraform init`. Can be a `string` or `array` depending on needs. Is not required, but is likely critical for any Terraform commands to work.
+
+### `known_hosts_location` (Not Required, string)
+
+By default, if using `known_hosts` mentioned with the `disable_ssh_keyscan` option above (on by default), the default location is `$PWD/known_hosts` - this will override that value.
 
 ### `no_validate` (Not Required, boolean)
 
@@ -216,7 +224,15 @@ Note: If `workspace` is also set it will be overridden.
 
 ## Developing
 
-To run the linting tool:
+**Before** opening a pull request, run the tests. You may have to update the tests depending on your proposed change(s).
+
+To run the tests:
+
+```shell
+docker-compose run --rm tests
+```
+
+You'll also want to run the linter:
 
 ```shell
 docker-compose run --rm lint
@@ -226,6 +242,6 @@ docker-compose run --rm lint
 
 1. Fork the repo.
 2. Make your changes.
-3. Make sure linting passes.
+3. Make sure tests and linting pass.
 4. Commit and push your changes to your branch.
 5. Open a pull request.
