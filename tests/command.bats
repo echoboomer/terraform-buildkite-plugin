@@ -169,6 +169,7 @@ EOM
   export BUILDKITE_PLUGIN_TERRAFORM_DISABLE_SSH_KEYSCAN="true"
   export BUILDKITE_PLUGIN_TERRAFORM_ENV_0=MYENV=0
   export BUILDKITE_PLUGIN_TERRAFORM_ENV_1=MYENV
+  export BUILDKITE_PLUGIN_TERRAFORM_DEBUG="true"
 
   stub docker \
       "run --rm -it --entrypoint terraform -e SSH_AUTH_SOCK -v /var/lib/buildkite-agent/.ssh/ssh-agent.sock:/var/lib/buildkite-agent/.ssh/ssh-agent.sock -v /plugin/terraform:/svc -v /plugin/known_hosts:/root/.ssh/known_hosts --env MYENV=0 --env MYENV -w /svc hashicorp/terraform:latest init : terraform init" \
@@ -180,6 +181,8 @@ EOM
       "meta-data set tf_diff true : echo buildkite-agent metadata set"
 
   run $PWD/hooks/command
+
+  assert_output --partial "--env MYENV=0 --env MYENV"
 
   unstub buildkite-agent
   unstub docker
@@ -196,6 +199,7 @@ EOM
   export BUILDKITE_PLUGIN_TERRAFORM_NO_VALIDATE="false"
   export BUILDKITE_PLUGIN_TERRAFORM_DISABLE_SSH_KEYSCAN="true"
   export BUILDKITE_PLUGIN_TERRAFORM_VOLUMES="foo:bar"
+  export BUILDKITE_PLUGIN_TERRAFORM_DEBUG="true"
 
   stub docker \
       "run --rm -it --entrypoint terraform -e SSH_AUTH_SOCK -v /var/lib/buildkite-agent/.ssh/ssh-agent.sock:/var/lib/buildkite-agent/.ssh/ssh-agent.sock -v /plugin/terraform:/svc -v /plugin/known_hosts:/root/.ssh/known_hosts -v foo:bar -w /svc hashicorp/terraform:latest init : terraform init" \
@@ -207,6 +211,8 @@ EOM
       "meta-data set tf_diff true : echo buildkite-agent metadata set"
 
   run $PWD/hooks/command
+
+  assert_output --partial "-v foo:bar"
 
   unstub buildkite-agent
   unstub docker
