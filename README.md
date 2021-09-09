@@ -169,7 +169,7 @@ If providing this option and setting it to `true`, additional output is provided
 
 ### `disable_ssh_keyscan` (Not Required, boolean)
 
-Disables the `ssh-keyscan` command which will add `github.com` to `known_hosts` to prevent hanging when referencing modules based in GitHub.
+Disables the `ssh-keyscan` command which will add `github.com` to `known_hosts` to prevent hanging when referencing modules based in GitHub. Providing `false` here will disable it. Enabled by default.
 
 ### `env` (Not Required, string, array)
 
