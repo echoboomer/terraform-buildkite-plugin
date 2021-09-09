@@ -5,3 +5,9 @@ services:
     command: ['--id', 'echoboomer/terraform']
     volumes:
       - '.:/plugin:ro'
+  tests:
+    build:
+      context: .
+      dockerfile: ./tests/dockerfiles/Dockerfile
+    volumes:
+      - '.:/plugin'

@@ -13,12 +13,16 @@ configuration:
       type: boolean
     debug:
       type: boolean
+    disable_ssh_keyscan:
+      type: boolean
     env:
       type: [string, array]
     image:
       type: string
     init_args:
       type: [string, array]
+    known_hosts_location:
+      type: string
     no_validate:
       type: boolean
     precommand:

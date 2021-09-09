@@ -22,9 +22,10 @@ done
 
 # We do this to cover cases where modules are stored in GitHub.
 # Without this, the container hangs forever waiting for confirmation.
-KNOWN_HOSTS_FILE=$(pwd)/known_hosts
+ENABLE_KEYSCAN=${BUILDKITE_PLUGIN_TERRAFORM_DISABLE_SSH_KEYSCAN:-}
+KNOWN_HOSTS_FILE=${BUILDKITE_PLUGIN_TERRAFORM_KNOWN_HOSTS_LOCATION:-"$(pwd)/known_hosts"}
 
-if [[ ! -f "$KNOWN_HOSTS_FILE" ]]; then
+if [[ ! -f "$KNOWN_HOSTS_FILE" && -z $ENABLE_KEYSCAN ]]; then
   ssh-keyscan github.com >> $KNOWN_HOSTS_FILE
 fi
 
@@ -59,6 +60,7 @@ function terraform-bin() {
   docker_args+=(
     "--rm"
     "-it"
+    "--entrypoint" "terraform"
     "-e" "SSH_AUTH_SOCK"
     "-v" "$SSH_AUTH_SOCK:$SSH_AUTH_SOCK"
     "-v" "$PWD:/svc"
