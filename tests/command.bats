@@ -55,11 +55,11 @@ cleanup() {
   export BUILDKITE_PLUGIN_TERRAFORM_DISABLE_SSH_KEYSCAN="true"
 
   stub docker \
-      "run --rm -it -e SSH_AUTH_SOCK -v /var/lib/buildkite-agent/.ssh/ssh-agent.sock:/var/lib/buildkite-agent/.ssh/ssh-agent.sock -v /plugin/terraform:/svc -v /plugin/known_hosts:/root/.ssh/known_hosts -w /svc hashicorp/terraform:latest init : terraform init" \
-      "run --rm -it -e SSH_AUTH_SOCK -v /var/lib/buildkite-agent/.ssh/ssh-agent.sock:/var/lib/buildkite-agent/.ssh/ssh-agent.sock -v /plugin/terraform:/svc -v /plugin/known_hosts:/root/.ssh/known_hosts -w /svc hashicorp/terraform:latest validate : terraform validate" \
-      "run --rm -it -e SSH_AUTH_SOCK -v /var/lib/buildkite-agent/.ssh/ssh-agent.sock:/var/lib/buildkite-agent/.ssh/ssh-agent.sock -v /plugin/terraform:/svc -v /plugin/known_hosts:/root/.ssh/known_hosts -w /svc hashicorp/terraform:latest plan -input=false -out tfplan : terraform plan -input=false -out tfplan" \
-      "run --rm -it -e SSH_AUTH_SOCK -v /var/lib/buildkite-agent/.ssh/ssh-agent.sock:/var/lib/buildkite-agent/.ssh/ssh-agent.sock -v /plugin/terraform:/svc -v /plugin/known_hosts:/root/.ssh/known_hosts -w /svc hashicorp/terraform:latest show tfplan -no-color : terraform show tfplan -no-color > tfplan.txt" \
-      "run --rm -it -e SSH_AUTH_SOCK -v /var/lib/buildkite-agent/.ssh/ssh-agent.sock:/var/lib/buildkite-agent/.ssh/ssh-agent.sock -v /plugin/terraform:/svc -v /plugin/known_hosts:/root/.ssh/known_hosts -w /svc hashicorp/terraform:latest show -json tfplan : terraform show -json tfplan > tfplan.json"
+      "run --rm -it --entrypoint terraform -e SSH_AUTH_SOCK -v /var/lib/buildkite-agent/.ssh/ssh-agent.sock:/var/lib/buildkite-agent/.ssh/ssh-agent.sock -v /plugin/terraform:/svc -v /plugin/known_hosts:/root/.ssh/known_hosts -w /svc hashicorp/terraform:latest init : terraform init" \
+      "run --rm -it --entrypoint terraform -e SSH_AUTH_SOCK -v /var/lib/buildkite-agent/.ssh/ssh-agent.sock:/var/lib/buildkite-agent/.ssh/ssh-agent.sock -v /plugin/terraform:/svc -v /plugin/known_hosts:/root/.ssh/known_hosts -w /svc hashicorp/terraform:latest validate : terraform validate" \
+      "run --rm -it --entrypoint terraform -e SSH_AUTH_SOCK -v /var/lib/buildkite-agent/.ssh/ssh-agent.sock:/var/lib/buildkite-agent/.ssh/ssh-agent.sock -v /plugin/terraform:/svc -v /plugin/known_hosts:/root/.ssh/known_hosts -w /svc hashicorp/terraform:latest plan -input=false -out tfplan : terraform plan -input=false -out tfplan" \
+      "run --rm -it --entrypoint terraform -e SSH_AUTH_SOCK -v /var/lib/buildkite-agent/.ssh/ssh-agent.sock:/var/lib/buildkite-agent/.ssh/ssh-agent.sock -v /plugin/terraform:/svc -v /plugin/known_hosts:/root/.ssh/known_hosts -w /svc hashicorp/terraform:latest show tfplan -no-color : terraform show tfplan -no-color > tfplan.txt" \
+      "run --rm -it --entrypoint terraform -e SSH_AUTH_SOCK -v /var/lib/buildkite-agent/.ssh/ssh-agent.sock:/var/lib/buildkite-agent/.ssh/ssh-agent.sock -v /plugin/terraform:/svc -v /plugin/known_hosts:/root/.ssh/known_hosts -w /svc hashicorp/terraform:latest show -json tfplan : terraform show -json tfplan > tfplan.json"
   stub buildkite-agent \
       "meta-data set tf_diff true : echo buildkite-agent metadata set"
 
@@ -98,9 +98,9 @@ EOM
   export BUILDKITE_PLUGIN_TERRAFORM_DISABLE_SSH_KEYSCAN="true"
 
   stub docker \
-      "run --rm -it -e SSH_AUTH_SOCK -v /var/lib/buildkite-agent/.ssh/ssh-agent.sock:/var/lib/buildkite-agent/.ssh/ssh-agent.sock -v /plugin/terraform:/svc -v /plugin/known_hosts:/root/.ssh/known_hosts -w /svc hashicorp/terraform:latest init : terraform init" \
-      "run --rm -it -e SSH_AUTH_SOCK -v /var/lib/buildkite-agent/.ssh/ssh-agent.sock:/var/lib/buildkite-agent/.ssh/ssh-agent.sock -v /plugin/terraform:/svc -v /plugin/known_hosts:/root/.ssh/known_hosts -w /svc hashicorp/terraform:latest validate : terraform validate" \
-      "run --rm -it -e SSH_AUTH_SOCK -v /var/lib/buildkite-agent/.ssh/ssh-agent.sock:/var/lib/buildkite-agent/.ssh/ssh-agent.sock -v /plugin/terraform:/svc -v /plugin/known_hosts:/root/.ssh/known_hosts -w /svc hashicorp/terraform:latest apply -input=false tfplan : terraform apply -input=false tfplan"
+      "run --rm -it --entrypoint terraform -e SSH_AUTH_SOCK -v /var/lib/buildkite-agent/.ssh/ssh-agent.sock:/var/lib/buildkite-agent/.ssh/ssh-agent.sock -v /plugin/terraform:/svc -v /plugin/known_hosts:/root/.ssh/known_hosts -w /svc hashicorp/terraform:latest init : terraform init" \
+      "run --rm -it --entrypoint terraform -e SSH_AUTH_SOCK -v /var/lib/buildkite-agent/.ssh/ssh-agent.sock:/var/lib/buildkite-agent/.ssh/ssh-agent.sock -v /plugin/terraform:/svc -v /plugin/known_hosts:/root/.ssh/known_hosts -w /svc hashicorp/terraform:latest validate : terraform validate" \
+      "run --rm -it --entrypoint terraform -e SSH_AUTH_SOCK -v /var/lib/buildkite-agent/.ssh/ssh-agent.sock:/var/lib/buildkite-agent/.ssh/ssh-agent.sock -v /plugin/terraform:/svc -v /plugin/known_hosts:/root/.ssh/known_hosts -w /svc hashicorp/terraform:latest apply -input=false tfplan : terraform apply -input=false tfplan"
 
   run $PWD/hooks/command
   assert_output --partial <<EOM
@@ -122,11 +122,11 @@ EOM
   export BUILDKITE_PLUGIN_TERRAFORM_KNOWN_HOSTS_LOCATION="tests/fixtures/known_hosts"
 
   stub docker \
-      "run --rm -it -e SSH_AUTH_SOCK -v /var/lib/buildkite-agent/.ssh/ssh-agent.sock:/var/lib/buildkite-agent/.ssh/ssh-agent.sock -v /plugin/terraform:/svc -v tests/fixtures/known_hosts:/root/.ssh/known_hosts -w /svc hashicorp/terraform:latest init : terraform init" \
-      "run --rm -it -e SSH_AUTH_SOCK -v /var/lib/buildkite-agent/.ssh/ssh-agent.sock:/var/lib/buildkite-agent/.ssh/ssh-agent.sock -v /plugin/terraform:/svc -v tests/fixtures/known_hosts:/root/.ssh/known_hosts -w /svc hashicorp/terraform:latest validate : terraform validate" \
-      "run --rm -it -e SSH_AUTH_SOCK -v /var/lib/buildkite-agent/.ssh/ssh-agent.sock:/var/lib/buildkite-agent/.ssh/ssh-agent.sock -v /plugin/terraform:/svc -v tests/fixtures/known_hosts:/root/.ssh/known_hosts -w /svc hashicorp/terraform:latest plan -input=false -out tfplan : terraform plan -input=false -out tfplan" \
-      "run --rm -it -e SSH_AUTH_SOCK -v /var/lib/buildkite-agent/.ssh/ssh-agent.sock:/var/lib/buildkite-agent/.ssh/ssh-agent.sock -v /plugin/terraform:/svc -v tests/fixtures/known_hosts:/root/.ssh/known_hosts -w /svc hashicorp/terraform:latest show tfplan -no-color : terraform show tfplan -no-color > tfplan.txt" \
-      "run --rm -it -e SSH_AUTH_SOCK -v /var/lib/buildkite-agent/.ssh/ssh-agent.sock:/var/lib/buildkite-agent/.ssh/ssh-agent.sock -v /plugin/terraform:/svc -v tests/fixtures/known_hosts:/root/.ssh/known_hosts -w /svc hashicorp/terraform:latest show -json tfplan : terraform show -json tfplan > tfplan.json"
+      "run --rm -it --entrypoint terraform -e SSH_AUTH_SOCK -v /var/lib/buildkite-agent/.ssh/ssh-agent.sock:/var/lib/buildkite-agent/.ssh/ssh-agent.sock -v /plugin/terraform:/svc -v tests/fixtures/known_hosts:/root/.ssh/known_hosts -w /svc hashicorp/terraform:latest init : terraform init" \
+      "run --rm -it --entrypoint terraform -e SSH_AUTH_SOCK -v /var/lib/buildkite-agent/.ssh/ssh-agent.sock:/var/lib/buildkite-agent/.ssh/ssh-agent.sock -v /plugin/terraform:/svc -v tests/fixtures/known_hosts:/root/.ssh/known_hosts -w /svc hashicorp/terraform:latest validate : terraform validate" \
+      "run --rm -it --entrypoint terraform -e SSH_AUTH_SOCK -v /var/lib/buildkite-agent/.ssh/ssh-agent.sock:/var/lib/buildkite-agent/.ssh/ssh-agent.sock -v /plugin/terraform:/svc -v tests/fixtures/known_hosts:/root/.ssh/known_hosts -w /svc hashicorp/terraform:latest plan -input=false -out tfplan : terraform plan -input=false -out tfplan" \
+      "run --rm -it --entrypoint terraform -e SSH_AUTH_SOCK -v /var/lib/buildkite-agent/.ssh/ssh-agent.sock:/var/lib/buildkite-agent/.ssh/ssh-agent.sock -v /plugin/terraform:/svc -v tests/fixtures/known_hosts:/root/.ssh/known_hosts -w /svc hashicorp/terraform:latest show tfplan -no-color : terraform show tfplan -no-color > tfplan.txt" \
+      "run --rm -it --entrypoint terraform -e SSH_AUTH_SOCK -v /var/lib/buildkite-agent/.ssh/ssh-agent.sock:/var/lib/buildkite-agent/.ssh/ssh-agent.sock -v /plugin/terraform:/svc -v tests/fixtures/known_hosts:/root/.ssh/known_hosts -w /svc hashicorp/terraform:latest show -json tfplan : terraform show -json tfplan > tfplan.json"
   stub buildkite-agent \
       "meta-data set tf_diff true : echo buildkite-agent metadata set"
 
@@ -154,6 +154,122 @@ Plan: 1 to add, 0 to change, 0 to destroy.
 EOM
 
   unstub buildkite-agent
+  unstub docker
+
+  cleanup
+}
+
+@test "command: extra env" {
+  cleanup
+
+  export BUILDKITE_PLUGIN_TERRAFORM_APPLY="false"
+  export BUILDKITE_PLUGIN_TERRAFORM_APPLY_MASTER="false"
+  export BUILDKITE_PLUGIN_TERRAFORM_APPLY_ONLY="false"
+  export BUILDKITE_PLUGIN_TERRAFORM_NO_VALIDATE="false"
+  export BUILDKITE_PLUGIN_TERRAFORM_DISABLE_SSH_KEYSCAN="true"
+  export BUILDKITE_PLUGIN_TERRAFORM_ENV_0=MYENV=0
+  export BUILDKITE_PLUGIN_TERRAFORM_ENV_1=MYENV
+
+  stub docker \
+      "run --rm -it --entrypoint terraform -e SSH_AUTH_SOCK -v /var/lib/buildkite-agent/.ssh/ssh-agent.sock:/var/lib/buildkite-agent/.ssh/ssh-agent.sock -v /plugin/terraform:/svc -v /plugin/known_hosts:/root/.ssh/known_hosts --env MYENV=0 --env MYENV -w /svc hashicorp/terraform:latest init : terraform init" \
+      "run --rm -it --entrypoint terraform -e SSH_AUTH_SOCK -v /var/lib/buildkite-agent/.ssh/ssh-agent.sock:/var/lib/buildkite-agent/.ssh/ssh-agent.sock -v /plugin/terraform:/svc -v /plugin/known_hosts:/root/.ssh/known_hosts --env MYENV=0 --env MYENV -w /svc hashicorp/terraform:latest validate : terraform validate" \
+      "run --rm -it --entrypoint terraform -e SSH_AUTH_SOCK -v /var/lib/buildkite-agent/.ssh/ssh-agent.sock:/var/lib/buildkite-agent/.ssh/ssh-agent.sock -v /plugin/terraform:/svc -v /plugin/known_hosts:/root/.ssh/known_hosts --env MYENV=0 --env MYENV -w /svc hashicorp/terraform:latest plan -input=false -out tfplan : terraform plan -input=false -out tfplan" \
+      "run --rm -it --entrypoint terraform -e SSH_AUTH_SOCK -v /var/lib/buildkite-agent/.ssh/ssh-agent.sock:/var/lib/buildkite-agent/.ssh/ssh-agent.sock -v /plugin/terraform:/svc -v /plugin/known_hosts:/root/.ssh/known_hosts --env MYENV=0 --env MYENV -w /svc hashicorp/terraform:latest show tfplan -no-color : terraform show tfplan -no-color > tfplan.txt" \
+      "run --rm -it --entrypoint terraform -e SSH_AUTH_SOCK -v /var/lib/buildkite-agent/.ssh/ssh-agent.sock:/var/lib/buildkite-agent/.ssh/ssh-agent.sock -v /plugin/terraform:/svc -v /plugin/known_hosts:/root/.ssh/known_hosts --env MYENV=0 --env MYENV -w /svc hashicorp/terraform:latest show -json tfplan : terraform show -json tfplan > tfplan.json"
+  stub buildkite-agent \
+      "meta-data set tf_diff true : echo buildkite-agent metadata set"
+
+  run $PWD/hooks/command
+
+  unstub buildkite-agent
+  unstub docker
+
+  cleanup
+}
+
+@test "command: extra volumes" {
+  cleanup
+
+  export BUILDKITE_PLUGIN_TERRAFORM_APPLY="false"
+  export BUILDKITE_PLUGIN_TERRAFORM_APPLY_MASTER="false"
+  export BUILDKITE_PLUGIN_TERRAFORM_APPLY_ONLY="false"
+  export BUILDKITE_PLUGIN_TERRAFORM_NO_VALIDATE="false"
+  export BUILDKITE_PLUGIN_TERRAFORM_DISABLE_SSH_KEYSCAN="true"
+  export BUILDKITE_PLUGIN_TERRAFORM_VOLUMES="foo:bar"
+
+  stub docker \
+      "run --rm -it --entrypoint terraform -e SSH_AUTH_SOCK -v /var/lib/buildkite-agent/.ssh/ssh-agent.sock:/var/lib/buildkite-agent/.ssh/ssh-agent.sock -v /plugin/terraform:/svc -v /plugin/known_hosts:/root/.ssh/known_hosts -v foo:bar -w /svc hashicorp/terraform:latest init : terraform init" \
+      "run --rm -it --entrypoint terraform -e SSH_AUTH_SOCK -v /var/lib/buildkite-agent/.ssh/ssh-agent.sock:/var/lib/buildkite-agent/.ssh/ssh-agent.sock -v /plugin/terraform:/svc -v /plugin/known_hosts:/root/.ssh/known_hosts -v foo:bar -w /svc hashicorp/terraform:latest validate : terraform validate" \
+      "run --rm -it --entrypoint terraform -e SSH_AUTH_SOCK -v /var/lib/buildkite-agent/.ssh/ssh-agent.sock:/var/lib/buildkite-agent/.ssh/ssh-agent.sock -v /plugin/terraform:/svc -v /plugin/known_hosts:/root/.ssh/known_hosts -v foo:bar -w /svc hashicorp/terraform:latest plan -input=false -out tfplan : terraform plan -input=false -out tfplan" \
+      "run --rm -it --entrypoint terraform -e SSH_AUTH_SOCK -v /var/lib/buildkite-agent/.ssh/ssh-agent.sock:/var/lib/buildkite-agent/.ssh/ssh-agent.sock -v /plugin/terraform:/svc -v /plugin/known_hosts:/root/.ssh/known_hosts -v foo:bar -w /svc hashicorp/terraform:latest show tfplan -no-color : terraform show tfplan -no-color > tfplan.txt" \
+      "run --rm -it --entrypoint terraform -e SSH_AUTH_SOCK -v /var/lib/buildkite-agent/.ssh/ssh-agent.sock:/var/lib/buildkite-agent/.ssh/ssh-agent.sock -v /plugin/terraform:/svc -v /plugin/known_hosts:/root/.ssh/known_hosts -v foo:bar -w /svc hashicorp/terraform:latest show -json tfplan : terraform show -json tfplan > tfplan.json"
+  stub buildkite-agent \
+      "meta-data set tf_diff true : echo buildkite-agent metadata set"
+
+  run $PWD/hooks/command
+
+  unstub buildkite-agent
+  unstub docker
+
+  cleanup
+}
+
+@test "command: init args" {
+  cleanup
+
+  export BUILDKITE_PLUGIN_TERRAFORM_APPLY="false"
+  export BUILDKITE_PLUGIN_TERRAFORM_APPLY_MASTER="false"
+  export BUILDKITE_PLUGIN_TERRAFORM_APPLY_ONLY="false"
+  export BUILDKITE_PLUGIN_TERRAFORM_NO_VALIDATE="false"
+  export BUILDKITE_PLUGIN_TERRAFORM_DISABLE_SSH_KEYSCAN="true"
+  export BUILDKITE_PLUGIN_TERRAFORM_DEBUG="true"
+  export BUILDKITE_PLUGIN_TERRAFORM_INIT_ARGS="--foobarbaz"
+
+  stub docker \
+      "run --rm -it --entrypoint terraform -e SSH_AUTH_SOCK -v /var/lib/buildkite-agent/.ssh/ssh-agent.sock:/var/lib/buildkite-agent/.ssh/ssh-agent.sock -v /plugin/terraform:/svc -v /plugin/known_hosts:/root/.ssh/known_hosts -w /svc hashicorp/terraform:latest init : terraform init" \
+      "run --rm -it --entrypoint terraform -e SSH_AUTH_SOCK -v /var/lib/buildkite-agent/.ssh/ssh-agent.sock:/var/lib/buildkite-agent/.ssh/ssh-agent.sock -v /plugin/terraform:/svc -v /plugin/known_hosts:/root/.ssh/known_hosts -w /svc hashicorp/terraform:latest validate : terraform validate" \
+      "run --rm -it --entrypoint terraform -e SSH_AUTH_SOCK -v /var/lib/buildkite-agent/.ssh/ssh-agent.sock:/var/lib/buildkite-agent/.ssh/ssh-agent.sock -v /plugin/terraform:/svc -v /plugin/known_hosts:/root/.ssh/known_hosts -w /svc hashicorp/terraform:latest plan -input=false -out tfplan : terraform plan -input=false -out tfplan" \
+      "run --rm -it --entrypoint terraform -e SSH_AUTH_SOCK -v /var/lib/buildkite-agent/.ssh/ssh-agent.sock:/var/lib/buildkite-agent/.ssh/ssh-agent.sock -v /plugin/terraform:/svc -v /plugin/known_hosts:/root/.ssh/known_hosts -w /svc hashicorp/terraform:latest show tfplan -no-color : terraform show tfplan -no-color > tfplan.txt" \
+      "run --rm -it --entrypoint terraform -e SSH_AUTH_SOCK -v /var/lib/buildkite-agent/.ssh/ssh-agent.sock:/var/lib/buildkite-agent/.ssh/ssh-agent.sock -v /plugin/terraform:/svc -v /plugin/known_hosts:/root/.ssh/known_hosts -w /svc hashicorp/terraform:latest show -json tfplan : terraform show -json tfplan > tfplan.json"
+  stub buildkite-agent \
+      "meta-data set tf_diff true : echo buildkite-agent metadata set"
+
+  run $PWD/hooks/command
+
+  assert_output --partial "INIT_ARGS: --foobarbaz"
+  assert_output --partial "Running init command string: terraform init --foobarbaz"
+
+  unstub buildkite-agent
+  unstub docker
+
+  cleanup
+}
+
+@test "command: use custom workspace" {
+  cleanup
+
+  export BUILDKITE_PLUGIN_TERRAFORM_APPLY="false"
+  export BUILDKITE_PLUGIN_TERRAFORM_APPLY_MASTER="false"
+  export BUILDKITE_PLUGIN_TERRAFORM_APPLY_ONLY="false"
+  export BUILDKITE_PLUGIN_TERRAFORM_NO_VALIDATE="false"
+  export BUILDKITE_PLUGIN_TERRAFORM_DISABLE_SSH_KEYSCAN="true"
+  export BUILDKITE_PLUGIN_TERRAFORM_DEBUG="true"
+  export BUILDKITE_PLUGIN_TERRAFORM_USE_WORKSPACES="true"
+  export BUILDKITE_PLUGIN_TERRAFORM_WORKSPACE="default"
+  export BUILDKITE_PLUGIN_TERRAFORM_AUTO_CREATE_WORKSPACE="false"
+
+  stub docker \
+      "run --rm -it --entrypoint terraform -e SSH_AUTH_SOCK -v /var/lib/buildkite-agent/.ssh/ssh-agent.sock:/var/lib/buildkite-agent/.ssh/ssh-agent.sock -v /plugin/terraform:/svc -v /plugin/known_hosts:/root/.ssh/known_hosts -w /svc hashicorp/terraform:latest init : terraform init" \
+      "run --rm -it --entrypoint terraform -e SSH_AUTH_SOCK -v /var/lib/buildkite-agent/.ssh/ssh-agent.sock:/var/lib/buildkite-agent/.ssh/ssh-agent.sock -v /plugin/terraform:/svc -v /plugin/known_hosts:/root/.ssh/known_hosts -w /svc hashicorp/terraform:latest workspace select default : terraform workspace select default" \
+      "run --rm -it --entrypoint terraform -e SSH_AUTH_SOCK -v /var/lib/buildkite-agent/.ssh/ssh-agent.sock:/var/lib/buildkite-agent/.ssh/ssh-agent.sock -v /plugin/terraform:/svc -v /plugin/known_hosts:/root/.ssh/known_hosts -w /svc hashicorp/terraform:latest validate : terraform validate" \
+      "run --rm -it --entrypoint terraform -e SSH_AUTH_SOCK -v /var/lib/buildkite-agent/.ssh/ssh-agent.sock:/var/lib/buildkite-agent/.ssh/ssh-agent.sock -v /plugin/terraform:/svc -v /plugin/known_hosts:/root/.ssh/known_hosts -w /svc hashicorp/terraform:latest plan -input=false -out tfplan : terraform plan -input=false -out tfplan" \
+      "run --rm -it --entrypoint terraform -e SSH_AUTH_SOCK -v /var/lib/buildkite-agent/.ssh/ssh-agent.sock:/var/lib/buildkite-agent/.ssh/ssh-agent.sock -v /plugin/terraform:/svc -v /plugin/known_hosts:/root/.ssh/known_hosts -w /svc hashicorp/terraform:latest show tfplan -no-color : terraform show tfplan -no-color > tfplan.txt" \
+      "run --rm -it --entrypoint terraform -e SSH_AUTH_SOCK -v /var/lib/buildkite-agent/.ssh/ssh-agent.sock:/var/lib/buildkite-agent/.ssh/ssh-agent.sock -v /plugin/terraform:/svc -v /plugin/known_hosts:/root/.ssh/known_hosts -w /svc hashicorp/terraform:latest show -json tfplan : terraform show -json tfplan > tfplan.json"
+
+  run $PWD/hooks/command
+
+  assert_output --partial "WORKSPACE: default"
+
   unstub docker
 
   cleanup
