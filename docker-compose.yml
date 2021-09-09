@@ -8,6 +8,6 @@ services:
   tests:
     build:
       context: .
-      dockerfile: ./tests/Dockerfile
+      dockerfile: ./tests/dockerfiles/Dockerfile
     volumes:
       - '.:/plugin'

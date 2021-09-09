@@ -45,7 +45,7 @@ cleanup() {
   fi
 }
 
-@test "Terraform Plan" {
+@test "command: terraform plan" {
   cleanup
 
   export BUILDKITE_PLUGIN_TERRAFORM_APPLY="false"
@@ -90,7 +90,7 @@ EOM
   unstub docker
 }
 
-@test "Terraform Apply" {
+@test "command: terraform apply" {
   export BUILDKITE_PLUGIN_TERRAFORM_APPLY="false"
   export BUILDKITE_PLUGIN_TERRAFORM_APPLY_MASTER="false"
   export BUILDKITE_PLUGIN_TERRAFORM_APPLY_ONLY="true"
@@ -107,6 +107,53 @@ EOM
 Apply complete! Resources: 1 added, 0 changed, 0 destroyed.
 EOM
 
+  unstub docker
+
+  cleanup
+}
+
+@test "command: terraform plan, ssh-keyscan enabled with custom location" {
+  cleanup
+
+  export BUILDKITE_PLUGIN_TERRAFORM_APPLY="false"
+  export BUILDKITE_PLUGIN_TERRAFORM_APPLY_MASTER="false"
+  export BUILDKITE_PLUGIN_TERRAFORM_APPLY_ONLY="false"
+  export BUILDKITE_PLUGIN_TERRAFORM_NO_VALIDATE="false"
+  export BUILDKITE_PLUGIN_TERRAFORM_KNOWN_HOSTS_LOCATION="tests/fixtures/known_hosts"
+
+  stub docker \
+      "run --rm -it -e SSH_AUTH_SOCK -v /var/lib/buildkite-agent/.ssh/ssh-agent.sock:/var/lib/buildkite-agent/.ssh/ssh-agent.sock -v /plugin/terraform:/svc -v tests/fixtures/known_hosts:/root/.ssh/known_hosts -w /svc hashicorp/terraform:latest init : terraform init" \
+      "run --rm -it -e SSH_AUTH_SOCK -v /var/lib/buildkite-agent/.ssh/ssh-agent.sock:/var/lib/buildkite-agent/.ssh/ssh-agent.sock -v /plugin/terraform:/svc -v tests/fixtures/known_hosts:/root/.ssh/known_hosts -w /svc hashicorp/terraform:latest validate : terraform validate" \
+      "run --rm -it -e SSH_AUTH_SOCK -v /var/lib/buildkite-agent/.ssh/ssh-agent.sock:/var/lib/buildkite-agent/.ssh/ssh-agent.sock -v /plugin/terraform:/svc -v tests/fixtures/known_hosts:/root/.ssh/known_hosts -w /svc hashicorp/terraform:latest plan -input=false -out tfplan : terraform plan -input=false -out tfplan" \
+      "run --rm -it -e SSH_AUTH_SOCK -v /var/lib/buildkite-agent/.ssh/ssh-agent.sock:/var/lib/buildkite-agent/.ssh/ssh-agent.sock -v /plugin/terraform:/svc -v tests/fixtures/known_hosts:/root/.ssh/known_hosts -w /svc hashicorp/terraform:latest show tfplan -no-color : terraform show tfplan -no-color > tfplan.txt" \
+      "run --rm -it -e SSH_AUTH_SOCK -v /var/lib/buildkite-agent/.ssh/ssh-agent.sock:/var/lib/buildkite-agent/.ssh/ssh-agent.sock -v /plugin/terraform:/svc -v tests/fixtures/known_hosts:/root/.ssh/known_hosts -w /svc hashicorp/terraform:latest show -json tfplan : terraform show -json tfplan > tfplan.json"
+  stub buildkite-agent \
+      "meta-data set tf_diff true : echo buildkite-agent metadata set"
+
+  run $PWD/hooks/command
+  run cat terraform/tfplan.txt
+  assert_output --partial <<EOM
+
+Terraform used the selected providers to generate the following execution
+plan. Resource actions are indicated with the following symbols:
+  + create
+
+Terraform will perform the following actions:
+
+  # random_id.test will be created
+  + resource "random_id" "test" {
+      + b64_std     = (known after apply)
+      + b64_url     = (known after apply)
+      + byte_length = 8
+      + dec         = (known after apply)
+      + hex         = (known after apply)
+      + id          = (known after apply)
+    }
+
+Plan: 1 to add, 0 to change, 0 to destroy.
+EOM
+
+  unstub buildkite-agent
   unstub docker
 
   cleanup

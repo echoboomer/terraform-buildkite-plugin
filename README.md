@@ -41,7 +41,7 @@ The plugin does a few things automatically:
 
 ## Versioning
 
-Leaving the `#v1.x.x` tag off of the end of the plugin name will automatically pull down the latest version.
+Leaving the `#vx.x.x` tag off of the end of the plugin name will automatically pull down the latest version.
 
 ## Examples
 
@@ -72,7 +72,7 @@ steps:
             - "-backend-config=prefix=my-prefix"
             - "-backend-config=credentials=sa.json"
           image: myrepo/mycustomtfimage
-          version: 0.12.21
+          version: 1.0.6
           use_workspaces: true
           workspace: development
 ```
@@ -93,7 +93,7 @@ steps:
             - "-backend-config=prefix=my-prefix"
             - "-backend-config=credentials=sa.json"
           image: myrepo/mycustomtfimage
-          version: 0.12.21
+          version: 1.0.6
           use_workspaces: true
           workspace: development
 ```
@@ -111,7 +111,7 @@ steps:
             - "-backend-config=bucket=my_gcp_bucket"
             - "-backend-config=prefix=my-prefix"
             - "-backend-config=credentials=sa.json"
-          version: 0.12.21
+          version: 1.0.6
 ```
 
 This will simply look at `BUILDKITE_BRANCH` and only run the `apply` step if it is set to `master`.
@@ -129,7 +129,7 @@ steps:
             - "-backend-config=bucket=my_gcp_bucket"
             - "-backend-config=prefix=my-prefix"
             - "-backend-config=credentials=sa.json"
-          version: 0.12.21
+          version: 1.0.6
       - artifacts#v1.2.0:
           upload: "tfplan"
   - label: "terraform apply"
@@ -144,7 +144,7 @@ steps:
             - "-backend-config=bucket=my_gcp_bucket"
             - "-backend-config=prefix=my-prefix"
             - "-backend-config=credentials=sa.json"
-          version: 0.12.21
+          version: 1.0.6
 ```
 
 This is useful if you want more control over the behavior of the plugin or if it is necessary to split apart the `apply` step for whatever reason.
