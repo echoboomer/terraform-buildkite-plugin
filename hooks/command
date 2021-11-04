@@ -181,7 +181,7 @@ function terraform-run() {
       [[ -e "${TFVAR_FILENAME}" ]] || { echo "TFVAR_FILENAME ${TFVAR_FILENAME} not found!" ; exit 1;}
       var_file_args="-var-file=${TFVAR_FILENAME}"
     fi
-    terraform-bin plan -input=false "${var_file_args:-}" -out tfplan
+    terraform-bin plan -input=false ${var_file_args:-} -out tfplan
 
     # Capture plan output for setting variables and passing as artifacts.
     terraform-bin show tfplan -no-color > tfplan.txt
