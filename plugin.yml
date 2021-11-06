@@ -27,6 +27,8 @@ configuration:
       type: boolean
     precommand:
       type: string
+    extra_plan_args:
+      type: string
     require_tfvar_file:
       type: boolean
     skip_apply_no_diff:

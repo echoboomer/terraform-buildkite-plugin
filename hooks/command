@@ -103,8 +103,10 @@ function terraform-run() {
   local APPLY=${BUILDKITE_PLUGIN_TERRAFORM_APPLY:-false}
   local APPLY_MASTER=${BUILDKITE_PLUGIN_TERRAFORM_APPLY_MASTER:-false}
   local APPLY_ONLY=${BUILDKITE_PLUGIN_TERRAFORM_APPLY_ONLY:-false}
+  local AUTO_CREATE_WORKSPACE=${BUILDKITE_PLUGIN_TERRAFORM_AUTO_CREATE_WORKSPACE:-true}
   local BUILDKITE_BRANCH=${BUILDKITE_BRANCH:-}
   local DEBUG=${BUILDKITE_PLUGIN_TERRAFORM_DEBUG:-false}
+  local EXTRA_PLAN_ARGS=${BUILDKITE_PLUGIN_TERRAFORM_EXTRA_PLAN_ARGS:-}
   local IMAGE_NAME=${BUILDKITE_PLUGIN_TERRAFORM_IMAGE:-"hashicorp/terraform"}
   local NO_VALIDATE=${BUILDKITE_PLUGIN_TERRAFORM_NO_VALIDATE:-false}
   local REQUIRE_TFVAR_FILE=${BUILDKITE_PLUGIN_TERRAFORM_REQUIRE_TFVAR_FILE:-false}
@@ -113,7 +115,6 @@ function terraform-run() {
   local USE_WORKSPACES=${BUILDKITE_PLUGIN_TERRAFORM_USE_WORKSPACES:-false}
   local VERSION=${BUILDKITE_PLUGIN_TERRAFORM_VERSION:-0.13.0}
   local WORKSPACE=${BUILDKITE_PLUGIN_TERRAFORM_WORKSPACE:-default}
-  local AUTO_CREATE_WORKSPACE=${BUILDKITE_PLUGIN_TERRAFORM_AUTO_CREATE_WORKSPACE:-true}
   local WORKSPACE_METADATA_KEY=${BUILDKITE_PLUGIN_TERRAFORM_WORKSPACE_METADATA_KEY:-}
 
   # Set arguments for terraform init.
@@ -128,6 +129,7 @@ function terraform-run() {
     echo "APPLY_MASTER: ${APPLY_MASTER}"
     echo "APPLY_ONLY: ${APPLY_ONLY}"
     echo "BUILDKITE_BRANCH: ${BUILDKITE_BRANCH}"
+    echo "EXTRA_PLAN_ARGS: ${EXTRA_PLAN_ARGS}"
     echo "IMAGE_NAME: ${IMAGE_NAME}"
     echo "INIT_ARGS: ${args[@]}"
     echo "NO_VALIDATE: ${NO_VALIDATE}"
@@ -181,7 +183,8 @@ function terraform-run() {
       [[ -e "${TFVAR_FILENAME}" ]] || { echo "TFVAR_FILENAME ${TFVAR_FILENAME} not found!" ; exit 1;}
       var_file_args="-var-file=${TFVAR_FILENAME}"
     fi
-    terraform-bin plan -input=false ${var_file_args:-} -out tfplan
+    #shellcheck disable=SC2086
+    terraform-bin plan -input=false ${var_file_args:-} -out tfplan $EXTRA_PLAN_ARGS
 
     # Capture plan output for setting variables and passing as artifacts.
     terraform-bin show tfplan -no-color > tfplan.txt
