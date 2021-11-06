@@ -128,6 +128,7 @@ function terraform-run() {
     echo "APPLY: ${APPLY}"
     echo "APPLY_MASTER: ${APPLY_MASTER}"
     echo "APPLY_ONLY: ${APPLY_ONLY}"
+    echo "AUTO_CREATE_WORKSPACE: ${AUTO_CREATE_WORKSPACE}"
     echo "BUILDKITE_BRANCH: ${BUILDKITE_BRANCH}"
     echo "EXTRA_PLAN_ARGS: ${EXTRA_PLAN_ARGS}"
     echo "IMAGE_NAME: ${IMAGE_NAME}"
@@ -137,7 +138,6 @@ function terraform-run() {
     echo "USE_WORKSPACES: ${USE_WORKSPACES}"
     echo "VERSION: ${VERSION}"
     echo "WORKSPACE: ${WORKSPACE}"
-    echo "AUTO_CREATE_WORKSPACE: ${AUTO_CREATE_WORKSPACE}"
     echo "WORKSPACE_METADATA_KEY ${WORKSPACE_METADATA_KEY}"
   fi
 
