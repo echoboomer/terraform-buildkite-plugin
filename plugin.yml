@@ -11,6 +11,8 @@ configuration:
       type: boolean
     apply_master:
       type: boolean
+    destroy:
+      type: boolean
     debug:
       type: boolean
     disable_ssh_keyscan:
