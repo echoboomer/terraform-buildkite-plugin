@@ -163,6 +163,10 @@ If this option is supplied, `plan` is skipped and `apply` is forced. This is use
 
 If this option is supplied, `apply` will automatically run if `BUILDKITE_BRANCH` is `master`. This allows you to define a single `pipeline.yml` step that will provide a `plan` on pull request and `apply` on master merge.
 
+### `commands` (Not required, string, array)
+
+If providing this option, a list of terraform commands to run.
+
 ### `debug` (Not Required, boolean)
 
 If providing this option and setting it to `true`, additional output is provided to help troubleshoot.
@@ -217,10 +221,10 @@ If setting `use_workspaces` to `true`, pass in the Terraform workspace name here
 
 ### `workspace_metadata_key` (Not Required, string)
 
-If setting `use_workspaces` to `true`, pass in a [Buildkite metadata](https://buildkite.com/docs/pipelines/build-meta-data) 
-key and the plugin will set the Terraform workspace based on the metadata value. 
+If setting `use_workspaces` to `true`, pass in a [Buildkite metadata](https://buildkite.com/docs/pipelines/build-meta-data)
+key and the plugin will set the Terraform workspace based on the metadata value.
 
-Note: If `workspace` is also set it will be overridden.   
+Note: If `workspace` is also set it will be overridden.
 
 ## Developing
 
