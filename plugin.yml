@@ -29,8 +29,14 @@ configuration:
       type: boolean
     precommand:
       type: string
+    extra_plan_args:
+      type: string
+    require_tfvar_file:
+      type: boolean
     skip_apply_no_diff:
       type: boolean
+    tfvar_filename:
+      type: string
     use_workspaces:
       type: boolean
     auto_create_workspace:
