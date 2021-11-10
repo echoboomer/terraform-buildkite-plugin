@@ -11,6 +11,8 @@ configuration:
       type: boolean
     apply_master:
       type: boolean
+    commands:
+      type: [string, array]
     destroy:
       type: boolean
     debug:

@@ -210,7 +210,19 @@ function terraform-run() {
     export TF_DIFF=true
   fi
 
-  if [[ "${APPLY}" == true || "${APPLY_ONLY}" == true || ("${APPLY_MASTER}" == true && "${BUILDKITE_BRANCH}" == "master") ]]; then
+  tf_commands=()
+  while read -r line; do
+    [[ -n "$line" ]] && tf_commands+=("$line")
+  done <<< "$(plugin_read_list COMMANDS)"
+
+  if [ "${#tf_commands[@]}" -gt "0" ]; then
+
+      for tf_cmd in "${tf_commands[@]-}"; do
+        echo "+++ :terraform: :buildkite: :hourglass: Running Terraform $tf_cmd ..."
+        terraform-bin "$tf_cmd" -input=false -auto-approve
+      done
+
+  elif [[ "${APPLY}" == true || "${APPLY_ONLY}" == true || ("${APPLY_MASTER}" == true && "${BUILDKITE_BRANCH}" == "master") ]]; then
     if [[ "${TF_DIFF}" == false && "${SKIP_APPLY_NO_DIFF}" == true ]]; then
       echo "--- :terraform: :buildkite: :zzz: Skipping apply step."
     else
