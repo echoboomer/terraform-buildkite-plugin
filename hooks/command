@@ -102,6 +102,7 @@ function terraform-bin() {
 function terraform-run() {
   local APPLY=${BUILDKITE_PLUGIN_TERRAFORM_APPLY:-false}
   local APPLY_MASTER=${BUILDKITE_PLUGIN_TERRAFORM_APPLY_MASTER:-false}
+  local DESTROY=${BUILDKITE_PLUGIN_TERRAFORM_DESTROY:-false}
   local APPLY_ONLY=${BUILDKITE_PLUGIN_TERRAFORM_APPLY_ONLY:-false}
   local BUILDKITE_BRANCH=${BUILDKITE_BRANCH:-}
   local DEBUG=${BUILDKITE_PLUGIN_TERRAFORM_DEBUG:-false}
@@ -124,6 +125,7 @@ function terraform-run() {
     echo "--- :terraform: :buildkite: :hammer_and_wrench: Debug on - list local variables."
     echo "APPLY: ${APPLY}"
     echo "APPLY_MASTER: ${APPLY_MASTER}"
+    echo "DESTROY: ${DESTROY}"
     echo "APPLY_ONLY: ${APPLY_ONLY}"
     echo "BUILDKITE_BRANCH: ${BUILDKITE_BRANCH}"
     echo "IMAGE_NAME: ${IMAGE_NAME}"
@@ -202,6 +204,11 @@ function terraform-run() {
       echo "+++ :terraform: :buildkite: :hourglass: Running Terraform apply based on calculated plan..."
       terraform-bin apply -input=false tfplan
     fi
+  fi
+
+  if [[ "${DESTROY}" == true ]]; then
+    echo "+++ :terraform: :buildkite: :hourglass: Running Terraform destroy..."
+    terraform-bin destroy -input=false -auto-approve
   fi
 }
 
