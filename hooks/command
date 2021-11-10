@@ -219,7 +219,7 @@ function terraform-run() {
 
       for tf_cmd in "${tf_commands[@]-}"; do
         echo "+++ :terraform: :buildkite: :hourglass: Running Terraform $tf_cmd ..."
-        terraform-bin "$tf_cmd" -input=false -auto-approve
+        terraform-bin "$tf_cmd"
       done
 
   elif [[ "${APPLY}" == true || "${APPLY_ONLY}" == true || ("${APPLY_MASTER}" == true && "${BUILDKITE_BRANCH}" == "master") ]]; then
