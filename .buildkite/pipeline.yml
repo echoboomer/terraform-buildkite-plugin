@@ -1,4 +1,9 @@
 steps:
-  - plugins:
+  - label: ':sparkles: Lint'
+    plugins:
+      - plugin-linter#v2.0.0:
+          id: echoboomer/terraform-buildkite-plugin
+  - label: ':test_tube: Tests'
+    plugins:
       - docker-compose#v3.9.0:
           run: tests
