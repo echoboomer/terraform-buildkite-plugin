@@ -14,7 +14,7 @@ The plugin makes a few assumptions about your environment:
 
 #### Organization
 
-Your Terraform code is in the root of your repository in the folder `terraform/`. At this time, another location is not supported.
+Your Terraform code is assumed to be in the root of your repository in the folder `terraform/`, but this can be overridden with the `working_directory` parameter.
 
 #### Initialization
 
@@ -211,16 +211,20 @@ Which version of Terraform to use. Defaults to `0.13.0`. This is the tag applied
 
 Additional volume mount statements to provide to the Docker container in the form `foo:bar`. Uses `-v` on the backend.
 
+### `working_directory` (Not Required, string)
+
+Directory in which the terraform code is located. Defaults to `terraform`.
+
 ### `workspace` (Not Required, string)
 
 If setting `use_workspaces` to `true`, pass in the Terraform workspace name here.
 
 ### `workspace_metadata_key` (Not Required, string)
 
-If setting `use_workspaces` to `true`, pass in a [Buildkite metadata](https://buildkite.com/docs/pipelines/build-meta-data) 
-key and the plugin will set the Terraform workspace based on the metadata value. 
+If setting `use_workspaces` to `true`, pass in a [Buildkite metadata](https://buildkite.com/docs/pipelines/build-meta-data)
+key and the plugin will set the Terraform workspace based on the metadata value.
 
-Note: If `workspace` is also set it will be overridden.   
+Note: If `workspace` is also set it will be overridden.
 
 ## Developing
 
