@@ -7,8 +7,10 @@ set -euo pipefail
 #########
 
 # Check for presence of required directories.
+WORKING_DIRECTORY=${BUILDKITE_PLUGIN_TERRAFORM_WORKING_DIRECTORY:-"terraform"}
+
 required_folders=(
-  terraform
+  ${WORKING_DIRECTORY}
 )
 
 for dir in "${required_folders[@]}"; do
@@ -137,7 +139,7 @@ function terraform-run() {
     echo "WORKSPACE_METADATA_KEY ${WORKSPACE_METADATA_KEY}"
   fi
 
-  cd terraform
+  cd ${WORKING_DIRECTORY}
 
   echo "+++ :terraform: :buildkite: :hammer_and_wrench: Setting up Terraform environment..."
   if [[ "${DEBUG}" == true ]]; then

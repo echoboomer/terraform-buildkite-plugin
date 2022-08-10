@@ -37,6 +37,8 @@ configuration:
       type: string
     volumes:
       type: [string, array]
+    working_directory:
+      type: string
     workspace:
       type: string
     workspace_metadata_key:
