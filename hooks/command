@@ -208,3 +208,5 @@ function terraform-run() {
 }
 
 terraform-run
+
+cd -
