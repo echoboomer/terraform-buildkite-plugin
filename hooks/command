@@ -169,17 +169,17 @@ function terraform-run() {
   if [[ "${APPLY_ONLY}" == false ]]; then
     echo "+++ :terraform: :buildkite: :hourglass: Running Terraform plan..."
 
+    set +e
     if [[ "${USE_WORKSPACES}" == true ]]; then
-      terraform-bin plan -input=false -out tfplan -var-file="${WORKSPACE}-terraform.tfvars"
+      terraform-bin plan -input=false -out tfplan -detailed-exitcode -var-file="${WORKSPACE}-terraform.tfvars"
     else
-      terraform-bin plan -input=false -out tfplan
+      terraform-bin plan -input=false -out tfplan -detailed-exitcode
     fi
+    TF_PLAN_EXIT_CODE=$?
+    set -x
 
-    # Capture plan output for setting variables and passing as artifacts.
-    terraform-bin show tfplan -no-color > tfplan.txt
-    terraform-bin show -json tfplan > tfplan.json
 
-    if grep -iFq "Plan: 0 to add, 0 to change, 0 to destroy." tfplan.txt; then
+    if [ $TF_PLAN_EXIT_CODE -eq 0 ]; then
       echo ""
       echo "--- :terraform: :buildkite: :white_check_mark: Exporting tf_diff=false to agent metadata."
       buildkite-agent meta-data set "tf_diff" "false"
@@ -208,3 +208,5 @@ function terraform-run() {
 }
 
 terraform-run
+
+cd -
